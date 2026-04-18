@@ -4,6 +4,8 @@ A research-and-design effort to specify a **harness-agnostic orchestration layer
 
 This repository contains the source PRD, diagram set, docs site, and (forthcoming) reference scaffolding.
 
+**Live docs:** _coming soon_ (Vercel deployment pending — URL will be added once the first deploy lands).
+
 ## Status
 
 - **Round 1 (complete, 2026-04-18)** — PRD v0.1.0. 25 chapters, 5 appendices, 11 Mermaid diagrams, Next.js 16 docs site. Harness protocol version 0.1.0.
@@ -56,6 +58,10 @@ The `.auto-memory/` symlink at the repo root points at the live, in-session copy
 - Diagram references inside chapters are written as bare filenames (e.g. `D04-orchestrator-loop.mermaid`); the docs-site preprocessor inlines them on first mention.
 - Terminology in `prd/appendices/B-glossary.md` is canonical — `packet`, `caucus`, `cohort`, `orchestrator system`, `drift`, etc. — and is used consistently across chapters.
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the workflow on adding chapters or diagrams, conventions, and the pre-PR checklist. Security issues should follow [SECURITY.md](./SECURITY.md).
+
 ## License
 
-TBD — placeholder until the license is decided.
+[MIT](./LICENSE) — see the LICENSE file for the full text.

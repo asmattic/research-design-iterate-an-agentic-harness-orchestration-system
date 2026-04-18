@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "cd docs-site && pnpm install --frozen-lockfile",
+  "buildCommand": "cd docs-site && pnpm build",
+  "devCommand": "cd docs-site && pnpm dev --port $PORT",
+  "outputDirectory": "docs-site/.next",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- docs-site/ prd/ diagrams/ vercel.json || exit 1"
+}

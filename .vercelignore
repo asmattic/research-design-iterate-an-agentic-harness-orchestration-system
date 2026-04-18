@@ -1,0 +1,23 @@
+# Files Vercel does not need at build time. The build still needs:
+#   - docs-site/  (the Next app)
+#   - prd/        (read at build time by docs-site/lib/docs.ts)
+#   - diagrams/   (read at build time by docs-site/lib/preprocess.ts)
+#
+# Anything not used by build can stay out of the Vercel upload.
+
+*.bundle
+.git-broken-*
+.auto-memory
+.DS_Store
+
+# Memory snapshot — useful for git, not for the deploy.
+memory/
+
+# Local maintenance — not needed in the deploy bundle.
+scripts/
+
+# Node / build cruft inside docs-site that should never travel.
+docs-site/node_modules/
+docs-site/.next/
+docs-site/.turbo/
+docs-site/.pnpm-store/

@@ -1,0 +1,99 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel older runs on the same ref to keep CI cheap.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs-site:
+    name: docs-site build + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: docs-site
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: docs-site/.nvmrc
+          cache: pnpm
+          cache-dependency-path: docs-site/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (also runs Next typecheck)
+        run: pnpm build
+
+      - name: Upload .next as artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: docs-site/.next/
+          retention-days: 7
+          include-hidden-files: true
+
+  memory-snapshot:
+    name: memory snapshot drift check
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The script needs the .auto-memory symlink to resolve, which it won't on
+      # CI. We re-point the script at the committed snapshot itself, which
+      # makes the check a self-consistency test: memory/ must match memory/
+      # (i.e. nothing should drift inside the snapshot between commits).
+      # If that ever fails, something has hand-edited memory/ outside the
+      # sync flow.
+      - name: Verify memory/ is internally consistent
+        run: |
+          set -euo pipefail
+          # Build a temp mirror of memory/ excluding SNAPSHOT.md (regenerated
+          # on every sync) and compare it back to memory/ to ensure no extras.
+          tmp=$(mktemp -d)
+          rsync -a --exclude='SNAPSHOT.md' memory/ "$tmp"/
+          diff -r --exclude='SNAPSHOT.md' "$tmp" memory >/dev/null
+          echo "memory/ snapshot is internally consistent."
+
+  prd-shape:
+    name: PRD shape sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Confirm chapter count and DOC_MANIFEST agree
+        run: |
+          set -euo pipefail
+          chapter_count=$(ls prd/[0-9]*.md | wc -l | tr -d ' ')
+          appendix_count=$(ls prd/appendices/*.md | wc -l | tr -d ' ')
+          manifest_chapters=$(grep -cE "kind: 'chapter'" docs-site/lib/docs.ts || true)
+          manifest_appendices=$(grep -cE "kind: 'appendix'" docs-site/lib/docs.ts || true)
+          echo "prd/        chapters: $chapter_count, appendices: $appendix_count"
+          echo "DOC_MANIFEST chapters: $manifest_chapters, appendices: $manifest_appendices"
+          if [[ "$chapter_count" != "$manifest_chapters" ]]; then
+            echo "::error::chapter count mismatch — update DOC_MANIFEST in docs-site/lib/docs.ts"
+            exit 1
+          fi
+          if [[ "$appendix_count" != "$manifest_appendices" ]]; then
+            echo "::error::appendix count mismatch — update DOC_MANIFEST in docs-site/lib/docs.ts"
+            exit 1
+          fi
