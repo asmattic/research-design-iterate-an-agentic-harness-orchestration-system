@@ -12,6 +12,10 @@ Thumbs.db
 # memory/, refreshed via scripts/sync-memory.sh.
 .auto-memory
 
+# Cowork session metadata (scheduled tasks, skill caches, etc.) — not part
+# of the repo, only meaningful in-sandbox.
+.claude/
+
 # Sandbox-only: git bundle copy, and any aborted .git from FUSE weirdness.
 *.bundle
 .git-broken-*
