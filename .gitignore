@@ -12,6 +12,10 @@ Thumbs.db
 # memory/, refreshed via scripts/sync-memory.sh.
 .auto-memory
 
+# Sandbox-only: git bundle copy, and any aborted .git from FUSE weirdness.
+*.bundle
+.git-broken-*
+
 # Node / Next
 node_modules/
 .pnpm-store/
