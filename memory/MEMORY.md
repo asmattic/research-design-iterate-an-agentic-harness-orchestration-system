@@ -1,3 +1,4 @@
 - [Project · Agentic Harness PRD](project_harness_prd.md) — Long-term multi-round effort; Round 1 (PRD v0.1.0) complete 2026-04-18, Round 2 is reference scaffolding + eval harness.
 - [Reference · Harness workspace location](reference_harness_workspace.md) — Where the PRD, diagrams, and docs-site live on disk.
 - [User · Asmattic's design style](user_asmattic_style.md) — Preferred voice, density, and structural conventions inferred from the PRD.
+- [Feedback · Next 16 tsconfig auto-edits](feedback_nextjs_tsconfig.md) — Commit Next's tsconfig rewrites; don't revert them.
