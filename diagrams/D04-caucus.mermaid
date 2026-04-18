@@ -1,0 +1,41 @@
+%% D04 · Caucus — bounded peer visibility
+%% Answers: When peer visibility is granted, how is it scoped?
+%% Referenced in §07 Communication Topology.
+
+flowchart TB
+    CSO["Cohort Sub-Orchestrator<br/>(spawns caucus with budget)"]
+
+    subgraph Caucus["Caucus · bounded scope"]
+        direction TB
+        note1["Scope: N &le; 4 experts<br/>Turns: &le; 6 each<br/>Tokens: &le; 20K total<br/>Wall-clock: &le; 10 min"]
+        subgraph Peers["Peer-visible during caucus only"]
+            P1["Expert A<br/>(proposer)"]
+            P2["Expert B<br/>(critic)"]
+            P3["Adversary<br/>(debate)"]
+            J["Judge / Arbitrator<br/>(LLM-as-Judge)"]
+        end
+        note1 -.- Peers
+        P1 <--> P2
+        P2 <--> P3
+        P1 <--> P3
+        P1 --> J
+        P2 --> J
+        P3 --> J
+    end
+
+    SUM["Transcript summarized<br/>at cohort boundary<br/>(packet only carries summary)"]
+    CSO --> Caucus
+    J --> SUM
+    SUM --> CSO
+
+    classDef csoCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef noteCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817,stroke-dasharray: 4 2
+    classDef peerCls fill:#f7f0e3,stroke:#8a7555,color:#2d2317
+    classDef judgeCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef sumCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+
+    class CSO csoCls
+    class note1 noteCls
+    class P1,P2,P3 peerCls
+    class J judgeCls
+    class SUM sumCls

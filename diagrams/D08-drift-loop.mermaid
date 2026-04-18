@@ -1,0 +1,77 @@
+%% D08 · Drift control loop
+%% Answers: How is drift measured continuously and acted on?
+%% Referenced in §11 Drift Control.
+
+flowchart TB
+    INT["INTENT.md<br/>(hash locked at campaign start)"]
+    STATE["Orchestrator State<br/>(current plan + recent packets)"]
+
+    subgraph Measure["Every 3 turns + every packet + end"]
+        direction LR
+        SA["Signal A · Cosine distance<br/>embed(INTENT) vs embed(state_summary)<br/>threshold: 0.25 warn, 0.40 pause"]
+        SB["Signal B · Rubric score<br/>LLM-judge: is current work<br/>answering INTENT?<br/>threshold: &lt;0.7 warn, &lt;0.5 pause"]
+    end
+
+    INT --> SA
+    STATE --> SA
+    INT --> SB
+    STATE --> SB
+
+    COMP["Composite: max(A, 1-B)"]
+    SA --> COMP
+    SB --> COMP
+
+    subgraph Decide["Decision"]
+        direction TB
+        DEC{"Composite<br/>threshold?"}
+    end
+
+    COMP --> DEC
+
+    PROCEED["Proceed<br/>(status: ok)"]
+    WARN["Warn<br/>(log, continue)"]
+    PAUSE["Pause<br/>(suspend, notify human)"]
+    HALT["Halt<br/>(stop campaign, escalate)"]
+
+    DEC -- "&lt; 0.15" --> PROCEED
+    DEC -- "0.15..0.30" --> WARN
+    DEC -- "0.30..0.50" --> PAUSE
+    DEC -- "&ge; 0.50" --> HALT
+
+    LOG[("drift.jsonl<br/>append-only")]
+    SA -.-> LOG
+    SB -.-> LOG
+    DEC -.-> LOG
+
+    REPLAN["Primary Orchestrator<br/>reads decision &rarr;<br/>replan OR request ratify"]
+    WARN --> REPLAN
+    PAUSE --> REPLAN
+
+    NOTE["Drift &ne; Replan<br/>Drift = semantic distance to INTENT.<br/>Replan = change of approach under fixed INTENT.<br/>Only human can mutate INTENT."]
+
+    PROCEED -.- NOTE
+    HALT -.- NOTE
+
+    classDef intentCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef stateCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef measureCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef compCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef decCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef okCls fill:#e6ecd3,stroke:#6a7a3a,color:#2d3817
+    classDef warnCls fill:#f7eed3,stroke:#8a7a3a,color:#3a3317
+    classDef pauseCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef haltCls fill:#f2d4d4,stroke:#a03a3a,color:#4a1717
+    classDef logCls fill:#eeeeee,stroke:#666666,color:#222222,stroke-dasharray: 4 2
+    classDef noteCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817,stroke-dasharray: 4 2
+
+    class INT intentCls
+    class STATE stateCls
+    class SA,SB measureCls
+    class COMP compCls
+    class DEC decCls
+    class PROCEED okCls
+    class WARN warnCls
+    class PAUSE pauseCls
+    class HALT haltCls
+    class LOG logCls
+    class NOTE,REPLAN noteCls

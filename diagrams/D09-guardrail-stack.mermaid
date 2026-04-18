@@ -1,0 +1,62 @@
+%% D09 · Guardrail stack
+%% Answers: How do the four guardrail classes layer at boundaries?
+%% Referenced in §12 Guardrails.
+
+flowchart TB
+    IN["Inbound data<br/>(human prompt, tool output,<br/>retrieved memory, web content)"]
+
+    subgraph Input["Input-side guardrails"]
+        direction TB
+        PI["Prompt-injection filter<br/>(Llama Guard class)<br/>separates data vs instruction"]
+        PII_IN["PII screen<br/>(redact / flag before<br/>expert sees)"]
+    end
+
+    IN --> PI
+    PI --> PII_IN
+
+    subgraph Agents["Agent boundary"]
+        AG["Expert / Cohort / Primary<br/>(LLM call)"]
+    end
+
+    PII_IN --> AG
+
+    subgraph Output["Output-side guardrails"]
+        direction TB
+        POL["Policy guardrail<br/>company allowlist /<br/>scope limits"]
+        SAF["Safety guardrail<br/>(Llama Guard / NeMo)<br/>harm categories"]
+        QUA["Quality guardrail<br/>schema conformance,<br/>required fields, length"]
+        PRIV["Privacy guardrail<br/>PII leak check outbound"]
+    end
+
+    AG --> POL
+    POL --> SAF
+    SAF --> QUA
+    QUA --> PRIV
+
+    subgraph Constitutional["Constitutional critique"]
+        CONST["Constitutional AI judge<br/>(Bai et al. 2022)<br/>model critiques own output<br/>vs written constitution"]
+    end
+
+    PRIV --> CONST
+
+    OUT["Outbound emission<br/>to Orchestrator System"]
+    CONST --> OUT
+
+    METRICS["Metrics:<br/>false-reject &le; 2%<br/>false-allow &le; 0.1%"]
+    OUT -.- METRICS
+
+    classDef inCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef inputCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef agentCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef outputCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef constCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef outCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef metricsCls fill:#eeeeee,stroke:#666666,color:#222222,stroke-dasharray: 4 2
+
+    class IN inCls
+    class PI,PII_IN inputCls
+    class AG agentCls
+    class POL,SAF,QUA,PRIV outputCls
+    class CONST constCls
+    class OUT outCls
+    class METRICS metricsCls

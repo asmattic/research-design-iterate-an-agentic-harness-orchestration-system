@@ -1,0 +1,76 @@
+%% D06 · Consensus aggregation
+%% Answers: How does a swarm's output become a Consensus Packet?
+%% Referenced in §09 Signal Consensus.
+
+flowchart TB
+    TASK["Task spec + context<br/>from Cohort Sub-Orchestrator"]
+
+    subgraph Swarm["Expert Swarm · N agents"]
+        direction LR
+        E1["Expert 1<br/>model A, prompt X"]
+        E2["Expert 2<br/>model B, prompt Y"]
+        E3["Expert 3<br/>model A, prompt Z"]
+        E4["Expert 4<br/>model C, prompt X"]
+        E5["Expert 5<br/>model A, retrieval view ω"]
+    end
+
+    TASK --> E1
+    TASK --> E2
+    TASK --> E3
+    TASK --> E4
+    TASK --> E5
+
+    subgraph Filter["Per-emission filtering"]
+        BS["BS Detector flags"]
+        DV["Deterministic Verifier<br/>(when testable)"]
+    end
+
+    E1 --> BS
+    E2 --> BS
+    E3 --> BS
+    E4 --> BS
+    E5 --> BS
+    BS --> DV
+
+    subgraph Aggregate["Aggregation"]
+        direction TB
+        W["Weight emissions<br/>(calibration, verifier,<br/>agreement, BS, authority)"]
+        G["Semantic grouping<br/>(LLM-as-Judge clusters)"]
+        C["Headline + interval<br/>+ confidence"]
+        D["Dissent preserved<br/>with weight share"]
+    end
+
+    DV --> W
+    W --> G
+    G --> C
+    G --> D
+
+    subgraph Outcome["Three-valued outcome"]
+        O1["Strengthened"]
+        O2["Revised"]
+        O3["Unchanged-but-calibrated"]
+    end
+
+    C --> O1
+    C --> O2
+    C --> O3
+
+    PACKET["Consensus Packet<br/>(value, interval, confidence,<br/>dissent, contributing_agents,<br/>verifier_results, bs_flags)"]
+
+    O1 --> PACKET
+    O2 --> PACKET
+    O3 --> PACKET
+
+    classDef taskCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef expertCls fill:#f7f0e3,stroke:#8a7555,color:#2d2317
+    classDef filterCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef aggCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef outcomeCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef packetCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+
+    class TASK taskCls
+    class E1,E2,E3,E4,E5 expertCls
+    class BS,DV filterCls
+    class W,G,C,D aggCls
+    class O1,O2,O3 outcomeCls
+    class PACKET packetCls

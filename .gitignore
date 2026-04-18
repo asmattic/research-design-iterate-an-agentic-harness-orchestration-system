@@ -1,0 +1,46 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Cowork sandbox artifact: symlink to the live, session-scoped auto-memory
+# directory. The target path only resolves inside a Cowork sandbox, so the
+# link itself is not meaningful outside it. Committed snapshots live in
+# memory/, refreshed via scripts/sync-memory.sh.
+.auto-memory
+
+# Node / Next
+node_modules/
+.pnpm-store/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel/
+
+# Python (future Round 2 scaffolding)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

@@ -1,0 +1,58 @@
+%% D03 · Hub topology (default)
+%% Answers: How does the hub-and-spoke communication topology work?
+%% Referenced in §07 Communication Topology.
+
+flowchart TB
+    H["Human"]
+    I["INTENT.md"]
+    PO["Primary Orchestrator<br/>(Hub)"]
+    OS["Orchestrator System"]
+
+    subgraph Cohorts["Cohort Layer (spokes)"]
+        C1["Research<br/>Cohort"]
+        C2["Finance<br/>Cohort"]
+        C3["Legal<br/>Cohort"]
+        C4["Physical<br/>Cohort"]
+    end
+
+    subgraph Experts["Expert Layer (within cohort only)"]
+        E1a["Expert"]
+        E1b["Swarm"]
+        E2a["Expert"]
+        E3a["Expert"]
+        E4a["Expert"]
+    end
+
+    H <--> I
+    I --> PO
+    PO <--> OS
+    OS <--> C1
+    OS <--> C2
+    OS <--> C3
+    OS <--> C4
+
+    C1 --> E1a
+    C1 --> E1b
+    C2 --> E2a
+    C3 --> E3a
+    C4 --> E4a
+
+    E1a -.-|"no cross-cohort chat"| E2a
+    E2a -.-|"no cross-cohort chat"| E3a
+    E3a -.-|"no cross-cohort chat"| E4a
+
+    classDef humanCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef intentCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef hubCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef osCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef cohortCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef expertCls fill:#f7f0e3,stroke:#8a7555,color:#2d2317
+
+    class H humanCls
+    class I intentCls
+    class PO hubCls
+    class OS osCls
+    class C1,C2,C3,C4 cohortCls
+    class E1a,E1b,E2a,E3a,E4a expertCls
+
+    linkStyle 10,11,12 stroke:#c66b2a,stroke-dasharray: 3 3,color:#c66b2a

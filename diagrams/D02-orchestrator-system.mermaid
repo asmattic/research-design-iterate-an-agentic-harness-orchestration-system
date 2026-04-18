@@ -1,0 +1,36 @@
+%% D02 · Orchestrator System detail
+%% Answers: What are the six sub-responsibilities of the Orchestrator System and how do they compose?
+%% Referenced in §06 Core Components.
+
+flowchart LR
+    IN["Incoming:<br/>Consensus Packets<br/>+ Memory Index<br/>+ Orchestrator State"]
+
+    subgraph OS["Orchestrator System · Six Sub-Responsibilities"]
+        direction TB
+        CM["1 · Context Manager<br/>load right slice of memory<br/>enforce token budget<br/>summarize when needed"]
+        BS["2 · BS Detector<br/>rubric-based hallucination /<br/>over-confidence flags<br/>LLM-judge, not guardrail"]
+        VA["3 · Validator<br/>bridges to deterministic<br/>verifier tools<br/>pass / fail / abstain"]
+        SN["4 · Signal/Noise Attributor<br/>weight emissions by:<br/>calibration, verifier,<br/>agreement, BS flags, authority"]
+        WT["5 · Weight Tweaker<br/>update per-agent and<br/>per-tool trust weights<br/>from retrospective outcomes"]
+        DD["6 · Drift Detector<br/>Signal A (cosine)<br/>+ Signal B (rubric)<br/>proceed / warn / pause / halt"]
+    end
+
+    OUT["Outgoing:<br/>Curated context<br/>+ Weighted claims<br/>+ Drift status<br/>to Primary Orchestrator"]
+
+    IN --> CM
+    CM --> BS
+    BS --> VA
+    VA --> SN
+    SN --> WT
+    CM --> DD
+    DD --> OUT
+    SN --> OUT
+    WT -.->|"updates"| SN
+
+    classDef inCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef subCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef outCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+
+    class IN inCls
+    class CM,BS,VA,SN,WT,DD subCls
+    class OUT outCls

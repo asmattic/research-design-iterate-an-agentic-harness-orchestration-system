@@ -1,0 +1,49 @@
+%% D10 · Feedback loops (three cadences)
+%% Answers: How do Reflexion / retrospective / eval-harness relate?
+%% Referenced in §13 Feedback Loops.
+
+flowchart TB
+    subgraph T["Turn (seconds-minutes)"]
+        REF["Reflexion<br/>(Shinn et al. 2023)<br/>verbal self-critique<br/>&rarr; episodic memory"]
+    end
+
+    subgraph K["Task / Campaign (hours)"]
+        RET["Retrospective<br/>reviews event log<br/>&rarr; proposes three diff types:<br/>1. Agent prompt diffs<br/>2. L2 memory entries<br/>3. Weight adjustments"]
+    end
+
+    subgraph H["Release (days-weeks)"]
+        EVAL["Eval Harness<br/>benchmark set (GAIA, SWE-bench,<br/>BrowseComp, MINT, custom)<br/>regression gates,<br/>per-dimension scorecard"]
+    end
+
+    RAT["Human ratifies diffs<br/>(no self-modifying INTENT,<br/>no silent prompt drift)"]
+
+    REF --> RET
+    RET --> RAT
+    RAT --> EVAL
+    EVAL -->|"if passes"| APPLY["Apply diffs to<br/>prompts / weights / memory"]
+    EVAL -->|"if regresses"| REJECT["Reject &amp; open issue"]
+
+    INT["INTENT.md"]
+    APPLY -.->|"never mutates"| INT
+    RET -.->|"never mutates"| INT
+
+    NOTE["Feedback hierarchy:<br/>INTENT is top, human-only writer.<br/>Everything below can propose;<br/>nothing below can overwrite INTENT."]
+    INT -.- NOTE
+
+    classDef turnCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef taskCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef releaseCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef ratCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef applyCls fill:#e6ecd3,stroke:#6a7a3a,color:#2d3817
+    classDef rejectCls fill:#f2d4d4,stroke:#a03a3a,color:#4a1717
+    classDef intCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef noteCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317,stroke-dasharray: 4 2
+
+    class REF turnCls
+    class RET taskCls
+    class EVAL releaseCls
+    class RAT ratCls
+    class APPLY applyCls
+    class REJECT rejectCls
+    class INT intCls
+    class NOTE noteCls

@@ -1,0 +1,83 @@
+%% D01 · System Layers
+%% Answers: What are the layers of this architecture, top to bottom?
+%% Referenced in §05 Architecture Overview.
+
+flowchart TB
+    subgraph L0["L0 · Human"]
+        H["Human Operator<br/>(writes INTENT.md, ratifies retros)"]
+    end
+
+    subgraph L1["L1 · Anchor"]
+        I["INTENT.md<br/>(immutable campaign anchor)"]
+    end
+
+    subgraph L2["L2 · Primary Orchestrator"]
+        PO["Primary Orchestrator<br/>clean context &le; 40K tokens<br/>plan / delegate / decide"]
+    end
+
+    subgraph L3["L3 · Orchestrator System"]
+        direction LR
+        CM["Context Manager"]
+        BS["BS Detector"]
+        VA["Validator"]
+        SN["Signal/Noise<br/>Attributor"]
+        WT["Weight Tweaker"]
+        DD["Drift Detector"]
+    end
+
+    subgraph L4["L4 · Cohort Sub-Orchestrators"]
+        C1["Research"]
+        C2["Finance"]
+        C3["Legal"]
+        C4["Physical"]
+        C5["Ops"]
+    end
+
+    subgraph L5["L5 · Expert Agents / Swarms"]
+        E1["Expert"]
+        E2["Swarm N=3..7"]
+        E3["Caucus (bounded)"]
+    end
+
+    subgraph Side["Side-Flows"]
+        direction TB
+        DV["Deterministic<br/>Verifier<br/>(precedence)"]
+        MEM["Tiered Memory<br/>L0/L1/L2/L3"]
+        EL["Event Log (JSONL)"]
+        GR["Guardrails"]
+    end
+
+    H --> I
+    I --> PO
+    PO <--> L3
+    L3 --> L4
+    L4 --> L5
+    L5 --> L4
+    L4 --> L3
+    L3 --> PO
+    PO --> H
+
+    L5 <-->|"verifier-testable claims"| DV
+    L3 <-->|"loads / writes"| MEM
+    PO -.->|"append-only"| EL
+    L3 -.->|"append-only"| EL
+    L4 -.->|"append-only"| EL
+    L5 -.->|"append-only"| EL
+    L4 <--> GR
+    L5 <--> GR
+
+    classDef humanCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef intentCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef primaryCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef orchCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef cohortCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef expertCls fill:#f7f0e3,stroke:#8a7555,color:#2d2317
+    classDef sideCls fill:#ecd9c0,stroke:#8b5a2b,color:#2d2317
+
+    class H humanCls
+    class I intentCls
+    class PO primaryCls
+    class CM,BS,VA,SN,WT,DD orchCls
+    class C1,C2,C3,C4,C5 cohortCls
+    class E1,E2,E3 expertCls
+    class DV,MEM,EL,GR sideCls

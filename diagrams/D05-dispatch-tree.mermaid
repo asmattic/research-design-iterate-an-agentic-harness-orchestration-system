@@ -1,0 +1,47 @@
+%% D05 · Dispatch decision tree
+%% Answers: How does the harness pick single / serial / parallel / swarm / caucus?
+%% Referenced in §08 Parallel vs Serial.
+
+flowchart TB
+    START(["Incoming task"])
+    Q1{"Single domain<br/>+ deterministic<br/>answer?"}
+    Q2{"Multi-step with<br/>data dependencies?"}
+    Q3{"Independent sub-tasks<br/>across cohorts?"}
+    Q4{"High-stakes claim<br/>or noisy domain?<br/>(calibration matters)"}
+    Q5{"Requires argument /<br/>disagreement surfacing?"}
+
+    A["Pattern A · Single agent<br/>1 expert, 1 turn, verifier<br/>(cheapest)"]
+    B["Pattern B · Serial chain<br/>Expert 1 &rarr; Expert 2 &rarr; Expert 3<br/>packet after each"]
+    C["Pattern C · Parallel independent<br/>Cohort fan-out, no cross-talk<br/>primary orchestrator joins"]
+    D["Pattern D · Swarm (MoA)<br/>N=3..7 specialists,<br/>confidence-interval consensus"]
+    E["Pattern E · Caucus (bounded)<br/>N&le;4 peers, judge, summary"]
+
+    START --> Q1
+    Q1 -- yes --> A
+    Q1 -- no --> Q2
+    Q2 -- yes --> B
+    Q2 -- no --> Q3
+    Q3 -- yes --> C
+    Q3 -- no --> Q4
+    Q4 -- yes --> D
+    Q4 -- no --> Q5
+    Q5 -- yes --> E
+    Q5 -- no --> A
+
+    note1["Ordering: A &lt; B &lt; C &lt; D &lt; E in cost.<br/>Default swarm size N=5, cap 12.<br/>Escalate only with reason cited in packet."]
+
+    A -.- note1
+    B -.- note1
+    C -.- note1
+    D -.- note1
+    E -.- note1
+
+    classDef startCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef qCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317
+    classDef leafCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef noteCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817,stroke-dasharray: 4 2
+
+    class START startCls
+    class Q1,Q2,Q3,Q4,Q5 qCls
+    class A,B,C,D,E leafCls
+    class note1 noteCls

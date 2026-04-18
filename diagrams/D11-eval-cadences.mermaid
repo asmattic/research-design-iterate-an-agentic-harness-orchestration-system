@@ -1,0 +1,67 @@
+%% D11 · Eval cadences
+%% Answers: How do per-turn / per-task / per-campaign evals flow into config?
+%% Referenced in §14 Evaluation.
+
+flowchart LR
+    subgraph PERTURN["Per-turn evals"]
+        direction TB
+        G1["Deterministic gates<br/>(schema, type, bounds,<br/>URL-resolves, test-passes)"]
+        J1["Rubric judges<br/>(BS Detector,<br/>Constitutional critique)"]
+    end
+
+    subgraph PERTASK["Per-task evals"]
+        direction TB
+        D1["Completion score<br/>(% INTENT criteria met)"]
+        D2["Intent-alignment score<br/>(rubric judge)"]
+        D3["Drift composite<br/>(Signal A + B)"]
+        D4["Calibration<br/>(Brier / ECE)"]
+        D5["Cost<br/>(tokens, USD, wall-clock)"]
+        D6["Safety<br/>(guardrail events)"]
+        D7["Human-gate burden<br/>(approvals per task)"]
+    end
+
+    subgraph PERCAMPAIGN["Per-campaign / Release"]
+        direction TB
+        B1["GAIA, BrowseComp,<br/>MINT, SWE-bench Verified"]
+        B2["Custom domain suite<br/>(rental, research)"]
+        B3["Adversarial set<br/>(prompt injection, traps)"]
+        REG["Regression gate:<br/>block merge if any<br/>dimension regresses &gt; 5%"]
+    end
+
+    CFG[("config.yaml<br/>agent prompts, weights,<br/>cohort composition")]
+    EL[("event log L3")]
+    REPORT["report.md<br/>per-dimension scorecard,<br/>regression diff"]
+
+    EL --> G1
+    EL --> J1
+    G1 --> D1
+    J1 --> D2
+    EL --> D3
+    EL --> D4
+    EL --> D5
+    EL --> D6
+    EL --> D7
+    D1 --> B1
+    D2 --> B1
+    D1 --> B2
+    D6 --> B3
+    B1 --> REG
+    B2 --> REG
+    B3 --> REG
+    REG --> REPORT
+    REG -->|"if passes"| CFG
+    REPORT -.->|"review"| CFG
+
+    classDef turnCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef taskCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef campaignCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef regCls fill:#d9c9b0,stroke:#5a4a3a,color:#2d2317,stroke-width:2px
+    classDef storeCls fill:#eeeeee,stroke:#666666,color:#222222,stroke-dasharray: 4 2
+    classDef reportCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+
+    class G1,J1 turnCls
+    class D1,D2,D3,D4,D5,D6,D7 taskCls
+    class B1,B2,B3 campaignCls
+    class REG regCls
+    class CFG,EL storeCls
+    class REPORT reportCls

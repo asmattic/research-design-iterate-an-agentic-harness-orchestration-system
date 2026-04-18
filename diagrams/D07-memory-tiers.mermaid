@@ -1,0 +1,45 @@
+%% D07 · Memory tiers
+%% Answers: How do L0 / L1 / L2 / L3 relate and flow?
+%% Referenced in §10 Memory Architecture.
+
+flowchart LR
+    subgraph L0["L0 · Working Memory"]
+        W["In-context for current turn<br/>INTENT, plan, recent packets,<br/>drift/budget status<br/>(&le; 40K primary, &le; 80K cohort)"]
+    end
+
+    subgraph L1["L1 · Hot KV"]
+        HK["Redis / in-proc KV<br/>campaign-scoped<br/>TTL: campaign lifetime<br/>packet refs, pending approvals,<br/>session weights"]
+    end
+
+    subgraph L2["L2 · Indexed"]
+        IX["Vector index + SQL<br/>cross-campaign, org-scoped<br/>semantic + structured filters<br/>sensitivity / freshness / supersedes"]
+    end
+
+    subgraph L3["L3 · Cold / Event Log"]
+        CL["Append-only JSONL<br/>every event envelope<br/>retrospectives + audits<br/>source of truth"]
+    end
+
+    subgraph INDEX["Memory Index"]
+        MI["metadata per entry:<br/>sensitivity, freshness,<br/>confidence, source,<br/>supersedes, tags"]
+    end
+
+    W -->|"Context Manager load"| L1
+    L1 -->|"warm miss"| L2
+    L2 -->|"cold miss"| L3
+    W -.->|"writes at packet boundary"| L1
+    L1 -.->|"promotes curated entries"| L2
+    W ==>|"every event appends"| L3
+    L2 --- MI
+    L1 --- MI
+
+    classDef l0Cls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817
+    classDef l1Cls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef l2Cls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef l3Cls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+    classDef indexCls fill:#f2ede4,stroke:#6b5d4a,color:#2d2317,stroke-dasharray: 4 2
+
+    class W l0Cls
+    class HK l1Cls
+    class IX l2Cls
+    class CL l3Cls
+    class MI indexCls
