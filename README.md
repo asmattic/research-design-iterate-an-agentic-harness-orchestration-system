@@ -58,6 +58,16 @@ The `.auto-memory/` symlink at the repo root points at the live, in-session copy
 - Diagram references inside chapters are written as bare filenames (e.g. `D04-orchestrator-loop.mermaid`); the docs-site preprocessor inlines them on first mention.
 - Terminology in `prd/appendices/B-glossary.md` is canonical — `packet`, `caucus`, `cohort`, `orchestrator system`, `drift`, etc. — and is used consistently across chapters.
 
+## Development Workflow
+
+This project follows a feature-branch workflow:
+
+1. Create a feature branch from `main` (e.g., `feat/your-feature-name`)
+2. Make your changes and commit
+3. Push the branch and open a PR
+4. Wait for CI/CD checks to pass
+5. Merge to `main` after approval
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the workflow on adding chapters or diagrams, conventions, and the pre-PR checklist. Security issues should follow [SECURITY.md](./SECURITY.md).
