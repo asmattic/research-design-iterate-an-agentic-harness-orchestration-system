@@ -23,13 +23,15 @@ const DIAGRAMS_ROOT = path.resolve(process.cwd(), '..', 'diagrams');
  * or it will be filtered out of the nav. This is deliberately explicit — the nav
  * is the PRD's spine, we want a build failure if something moves unannounced.
  */
+type DocKind = 'chapter' | 'appendix';
+
 export const DOC_MANIFEST: Array<{
   slug: string;
   part: string;
   order: number;
   relPath: string;
   fallbackTitle: string;
-  kind: 'chapter' | 'appendix';
+  kind: DocKind;
 }> = [
   { slug: '00-preface',               part: 'Front matter',  order: 0,  relPath: '00-preface.md',               fallbackTitle: 'Preface', kind: 'chapter' },
   { slug: '01-executive-summary',     part: 'Front matter',  order: 1,  relPath: '01-executive-summary.md',     fallbackTitle: 'Executive summary', kind: 'chapter' },
