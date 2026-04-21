@@ -23,52 +23,55 @@ const DIAGRAMS_ROOT = path.resolve(process.cwd(), '..', 'diagrams');
  * or it will be filtered out of the nav. This is deliberately explicit — the nav
  * is the PRD's spine, we want a build failure if something moves unannounced.
  */
+type DocKind = 'chapter' | 'appendix';
+
 export const DOC_MANIFEST: Array<{
   slug: string;
   part: string;
   order: number;
   relPath: string;
   fallbackTitle: string;
+  kind: DocKind;
 }> = [
-  { slug: '00-preface',               part: 'Front matter',  order: 0,  relPath: '00-preface.md',               fallbackTitle: 'Preface' },
-  { slug: '01-executive-summary',     part: 'Front matter',  order: 1,  relPath: '01-executive-summary.md',     fallbackTitle: 'Executive summary' },
-  { slug: '02-intent-goals',          part: 'Front matter',  order: 2,  relPath: '02-intent-goals.md',          fallbackTitle: 'Intent & goals' },
-  { slug: '03-problem-statement',     part: 'Front matter',  order: 3,  relPath: '03-problem-statement.md',     fallbackTitle: 'Problem statement' },
+  { slug: '00-preface',               part: 'Front matter',  order: 0,  relPath: '00-preface.md',               fallbackTitle: 'Preface', kind: 'chapter' },
+  { slug: '01-executive-summary',     part: 'Front matter',  order: 1,  relPath: '01-executive-summary.md',     fallbackTitle: 'Executive summary', kind: 'chapter' },
+  { slug: '02-intent-goals',          part: 'Front matter',  order: 2,  relPath: '02-intent-goals.md',          fallbackTitle: 'Intent & goals', kind: 'chapter' },
+  { slug: '03-problem-statement',     part: 'Front matter',  order: 3,  relPath: '03-problem-statement.md',     fallbackTitle: 'Problem statement', kind: 'chapter' },
 
-  { slug: '04-conceptual-foundations', part: 'Part I · Foundations',    order: 10, relPath: '04-conceptual-foundations.md', fallbackTitle: 'Conceptual foundations' },
+  { slug: '04-conceptual-foundations', part: 'Part I · Foundations',    order: 10, relPath: '04-conceptual-foundations.md', fallbackTitle: 'Conceptual foundations', kind: 'chapter' },
 
-  { slug: '05-architecture-overview',  part: 'Part II · Architecture',  order: 20, relPath: '05-architecture-overview.md',  fallbackTitle: 'Architecture overview' },
-  { slug: '06-core-components',        part: 'Part II · Architecture',  order: 21, relPath: '06-core-components.md',        fallbackTitle: 'Core components' },
-  { slug: '07-communication-topology', part: 'Part II · Architecture',  order: 22, relPath: '07-communication-topology.md', fallbackTitle: 'Communication topology' },
-  { slug: '08-parallel-vs-serial',     part: 'Part II · Architecture',  order: 23, relPath: '08-parallel-vs-serial.md',     fallbackTitle: 'Parallel vs serial' },
+  { slug: '05-architecture-overview',  part: 'Part II · Architecture',  order: 20, relPath: '05-architecture-overview.md',  fallbackTitle: 'Architecture overview', kind: 'chapter' },
+  { slug: '06-core-components',        part: 'Part II · Architecture',  order: 21, relPath: '06-core-components.md',        fallbackTitle: 'Core components', kind: 'chapter' },
+  { slug: '07-communication-topology', part: 'Part II · Architecture',  order: 22, relPath: '07-communication-topology.md', fallbackTitle: 'Communication topology', kind: 'chapter' },
+  { slug: '08-parallel-vs-serial',     part: 'Part II · Architecture',  order: 23, relPath: '08-parallel-vs-serial.md',     fallbackTitle: 'Parallel vs serial', kind: 'chapter' },
 
-  { slug: '09-signal-consensus',       part: 'Part III · Signal & consensus', order: 30, relPath: '09-signal-consensus.md', fallbackTitle: 'Signal & consensus' },
+  { slug: '09-signal-consensus',       part: 'Part III · Signal & consensus', order: 30, relPath: '09-signal-consensus.md', fallbackTitle: 'Signal & consensus', kind: 'chapter' },
 
-  { slug: '10-memory-architecture',    part: 'Part IV · Memory & drift', order: 40, relPath: '10-memory-architecture.md', fallbackTitle: 'Memory architecture' },
-  { slug: '11-drift-control',          part: 'Part IV · Memory & drift', order: 41, relPath: '11-drift-control.md',       fallbackTitle: 'Drift control' },
+  { slug: '10-memory-architecture',    part: 'Part IV · Memory & drift', order: 40, relPath: '10-memory-architecture.md', fallbackTitle: 'Memory architecture', kind: 'chapter' },
+  { slug: '11-drift-control',          part: 'Part IV · Memory & drift', order: 41, relPath: '11-drift-control.md',       fallbackTitle: 'Drift control', kind: 'chapter' },
 
-  { slug: '12-guardrails',             part: 'Part V · Safety & feedback', order: 50, relPath: '12-guardrails.md',        fallbackTitle: 'Guardrails' },
-  { slug: '13-feedback-loops',         part: 'Part V · Safety & feedback', order: 51, relPath: '13-feedback-loops.md',    fallbackTitle: 'Feedback loops' },
-  { slug: '14-evaluation',             part: 'Part V · Safety & feedback', order: 52, relPath: '14-evaluation.md',        fallbackTitle: 'Evaluation' },
+  { slug: '12-guardrails',             part: 'Part V · Safety & feedback', order: 50, relPath: '12-guardrails.md',        fallbackTitle: 'Guardrails', kind: 'chapter' },
+  { slug: '13-feedback-loops',         part: 'Part V · Safety & feedback', order: 51, relPath: '13-feedback-loops.md',    fallbackTitle: 'Feedback loops', kind: 'chapter' },
+  { slug: '14-evaluation',             part: 'Part V · Safety & feedback', order: 52, relPath: '14-evaluation.md',        fallbackTitle: 'Evaluation', kind: 'chapter' },
 
-  { slug: '15-protocol-spec',          part: 'Part VI · Protocol & adapters', order: 60, relPath: '15-protocol-spec.md', fallbackTitle: 'Protocol spec' },
-  { slug: '16-adapters',               part: 'Part VI · Protocol & adapters', order: 61, relPath: '16-adapters.md',      fallbackTitle: 'Adapters' },
+  { slug: '15-protocol-spec',          part: 'Part VI · Protocol & adapters', order: 60, relPath: '15-protocol-spec.md', fallbackTitle: 'Protocol spec', kind: 'chapter' },
+  { slug: '16-adapters',               part: 'Part VI · Protocol & adapters', order: 61, relPath: '16-adapters.md',      fallbackTitle: 'Adapters', kind: 'chapter' },
 
-  { slug: '17-worked-example-rental',           part: 'Part VII · Worked examples', order: 70, relPath: '17-worked-example-rental.md',           fallbackTitle: 'Worked example · rental toolkit' },
-  { slug: '18-worked-example-code-architecture', part: 'Part VII · Worked examples', order: 71, relPath: '18-worked-example-code-architecture.md', fallbackTitle: 'Worked example · code architecture' },
-  { slug: '19-worked-example-ai-research',      part: 'Part VII · Worked examples', order: 72, relPath: '19-worked-example-ai-research.md',      fallbackTitle: 'Worked example · AI research' },
+  { slug: '17-worked-example-rental',           part: 'Part VII · Worked examples', order: 70, relPath: '17-worked-example-rental.md',           fallbackTitle: 'Worked example · rental toolkit', kind: 'chapter' },
+  { slug: '18-worked-example-code-architecture', part: 'Part VII · Worked examples', order: 71, relPath: '18-worked-example-code-architecture.md', fallbackTitle: 'Worked example · code architecture', kind: 'chapter' },
+  { slug: '19-worked-example-ai-research',      part: 'Part VII · Worked examples', order: 72, relPath: '19-worked-example-ai-research.md',      fallbackTitle: 'Worked example · AI research', kind: 'chapter' },
 
-  { slug: '20-risks-and-mitigations',  part: 'Part VIII · Risk & ops', order: 80, relPath: '20-risks-and-mitigations.md', fallbackTitle: 'Risks & mitigations' },
-  { slug: '21-roadmap',                part: 'Part VIII · Risk & ops', order: 81, relPath: '21-roadmap.md',               fallbackTitle: 'Roadmap' },
-  { slug: '22-open-questions',         part: 'Part VIII · Risk & ops', order: 82, relPath: '22-open-questions.md',        fallbackTitle: 'Open questions' },
+  { slug: '20-risks-and-mitigations',  part: 'Part VIII · Risk & ops', order: 80, relPath: '20-risks-and-mitigations.md', fallbackTitle: 'Risks & mitigations', kind: 'chapter' },
+  { slug: '21-roadmap',                part: 'Part VIII · Risk & ops', order: 81, relPath: '21-roadmap.md',               fallbackTitle: 'Roadmap', kind: 'chapter' },
+  { slug: '22-open-questions',         part: 'Part VIII · Risk & ops', order: 82, relPath: '22-open-questions.md',        fallbackTitle: 'Open questions', kind: 'chapter' },
 
-  { slug: '23-next-report',            part: 'Part IX · Next report',  order: 90, relPath: '23-next-report.md',           fallbackTitle: 'Round 2 scope' },
+  { slug: '23-next-report',            part: 'Part IX · Next report',  order: 90, relPath: '23-next-report.md',           fallbackTitle: 'Round 2 scope', kind: 'chapter' },
 
-  { slug: 'appendices/A-diagram-index', part: 'Appendices', order: 100, relPath: 'appendices/A-diagram-index.md', fallbackTitle: 'Appendix A · Diagram index' },
-  { slug: 'appendices/B-glossary',      part: 'Appendices', order: 101, relPath: 'appendices/B-glossary.md',      fallbackTitle: 'Appendix B · Glossary' },
-  { slug: 'appendices/C-bibliography',  part: 'Appendices', order: 102, relPath: 'appendices/C-bibliography.md',  fallbackTitle: 'Appendix C · Bibliography' },
-  { slug: 'appendices/D-schemas',       part: 'Appendices', order: 103, relPath: 'appendices/D-schemas.md',       fallbackTitle: 'Appendix D · Protocol schemas' },
-  { slug: 'appendices/E-proposed-skills', part: 'Appendices', order: 104, relPath: 'appendices/E-proposed-skills.md', fallbackTitle: 'Appendix E · Proposed skills' },
+  { slug: 'appendices/A-diagram-index', part: 'Appendices', order: 100, relPath: 'appendices/A-diagram-index.md', fallbackTitle: 'Appendix A · Diagram index', kind: 'appendix' },
+  { slug: 'appendices/B-glossary',      part: 'Appendices', order: 101, relPath: 'appendices/B-glossary.md',      fallbackTitle: 'Appendix B · Glossary', kind: 'appendix' },
+  { slug: 'appendices/C-bibliography',  part: 'Appendices', order: 102, relPath: 'appendices/C-bibliography.md',  fallbackTitle: 'Appendix C · Bibliography', kind: 'appendix' },
+  { slug: 'appendices/D-schemas',       part: 'Appendices', order: 103, relPath: 'appendices/D-schemas.md',       fallbackTitle: 'Appendix D · Protocol schemas', kind: 'appendix' },
+  { slug: 'appendices/E-proposed-skills', part: 'Appendices', order: 104, relPath: 'appendices/E-proposed-skills.md', fallbackTitle: 'Appendix E · Proposed skills', kind: 'appendix' },
 ];
 
 /** Very small H1 extractor — no markdown parser needed for the nav title. */
