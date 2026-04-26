@@ -1,0 +1,17 @@
+{
+  "name": "agentic-harness-orchestration-system",
+  "version": "0.2.1",
+  "private": true,
+  "description": "Repo root package for Vercel detection and docs-site script delegation.",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "pnpm --dir docs-site run build",
+    "dev": "pnpm --dir docs-site run dev",
+    "lint": "pnpm --dir docs-site run lint",
+    "test:js": "pnpm --dir docs-site run test:js",
+    "typecheck": "pnpm --dir docs-site run typecheck"
+  },
+  "dependencies": {
+    "next": "^16.0.0"
+  }
+}
