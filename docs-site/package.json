@@ -1,6 +1,6 @@
 {
   "name": "harness-prd-docs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Docs site for the Agentic Harness Orchestration System PRD. Reads sibling /prd/ markdown and /diagrams/ mermaid files, renders them with MDX and client-side Mermaid.",
   "engines": {
