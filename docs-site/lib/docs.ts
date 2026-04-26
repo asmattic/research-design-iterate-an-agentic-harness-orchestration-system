@@ -15,6 +15,12 @@ export interface DocContent extends DocMeta {
   body: string;           // stripped of leading H1 so we can render title ourselves
 }
 
+export interface SearchEntry extends DocMeta {
+  href: string;
+  excerpt: string;
+  text: string;
+}
+
 const PRD_ROOT = path.resolve(process.cwd(), '..', 'prd');
 const DIAGRAMS_ROOT = path.resolve(process.cwd(), '..', 'diagrams');
 
@@ -84,6 +90,23 @@ function stripLeadingH1(raw: string): string {
   return raw.replace(/^#\s+.+?\n+/m, '');
 }
 
+function plainText(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[[^\]]*]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[*_~>|-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function excerptFrom(text: string): string {
+  if (text.length <= 180) return text;
+  return `${text.slice(0, 177).trim()}...`;
+}
+
 export function listDocs(): DocMeta[] {
   return DOC_MANIFEST.map(entry => {
     const abs = path.join(PRD_ROOT, entry.relPath);
@@ -151,6 +174,23 @@ export function groupedDocs(): Array<{ part: string; docs: DocMeta[] }> {
     else groups.push({ part: doc.part, docs: [doc] });
   }
   return groups;
+}
+
+export function getSearchIndex(): SearchEntry[] {
+  return DOC_MANIFEST.map(entry => {
+    const doc = getDoc(entry.slug);
+    const text = plainText(doc?.body ?? '');
+    return {
+      slug: entry.slug,
+      title: doc?.title ?? entry.fallbackTitle,
+      part: entry.part,
+      order: entry.order,
+      relPath: entry.relPath,
+      href: `/docs/${entry.slug}`,
+      excerpt: excerptFrom(text),
+      text,
+    };
+  });
 }
 
 export function prevNextOf(slug: string): { prev: DocMeta | null; next: DocMeta | null } {
