@@ -1,5 +1,7 @@
 import { Mermaid } from '@/components/Mermaid';
-import type { MDXComponents } from 'mdx/types';
+import type { ElementType } from 'react';
+
+type MDXComponents = Record<string, ElementType>;
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
