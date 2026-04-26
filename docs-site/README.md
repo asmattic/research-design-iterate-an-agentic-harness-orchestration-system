@@ -50,34 +50,66 @@ The pipeline:
 3. `app/docs/[...slug]/page.tsx` — renders each chapter with
   `next-mdx-remote/rsc`, `remark-gfm`, and `rehype-slug` / `rehype-autolink-headings`.
 4. `components/Mermaid.tsx` — a client component that renders Mermaid SVG on
-  the client, themed with the Anthropic palette (orange/blue/green accents,
-   warm off-white background).
+  the client, themed from the neutral docs design tokens.
+5. `components/DocsSearch.tsx` — a shadcn `CommandDialog` search palette fed by
+  `getSearchIndex()` in `lib/docs.ts`.
 
-## Branding
+## Design system
 
-Anthropic brand tokens are declared as CSS variables in `app/globals.css`:
+The docs use a Vercel-docs-inspired stack:
+
+- Tailwind CSS v4 for layout, typography, spacing, borders, and page composition.
+- shadcn/ui source-owned primitives for interactive UI, starting with
+  `Button`, `Dialog`, and `Command` for global search.
+- CSS variables in `app/globals.css` as the shared token layer.
+- Responsive font-size tokens in `app/globals.css` (`--text-*`,
+  `--font-size-body`, `--line-height-body`) so prose and navigation scale up
+  across viewport sizes.
 
 
 | Token            | Role               | Value     |
 | ---------------- | ------------------ | --------- |
-| `--c-dark`       | Text on light bg   | `#141413` |
-| `--c-light`      | Page background    | `#faf9f5` |
-| `--c-mid-gray`   | Secondary elements | `#b0aea5` |
-| `--c-light-gray` | Subtle backgrounds | `#e8e6dc` |
-| `--c-orange`     | Primary accent     | `#d97757` |
-| `--c-blue`       | Secondary accent   | `#6a9bcc` |
-| `--c-green`      | Tertiary accent    | `#788c5d` |
+| `--bg`           | Page background    | `#ffffff` / `#000000` |
+| `--bg-subtle`    | Subtle surfaces    | `#fafafa` / `#111111` |
+| `--fg`           | Primary text       | `#111111` / `#ededed` |
+| `--fg-muted`     | Secondary text     | `#666666` / `#a1a1a1` |
+| `--border`       | Hairline borders   | `#e5e5e5` / `#262626` |
+| `--accent`       | Primary accent     | `#000000` / `#ffffff` |
 
 
-Typography uses `next/font/google` for Poppins (headings) and Lora (body),
-wired into the CSS variables `--font-poppins` and `--font-lora`.
+Typography uses `next/font/google` for Geist with the CSS token fallback kept
+Geist-compatible.
+The sidebar and home page expose a `⌘K` command search powered by the markdown
+manifest in `lib/docs.ts`.
+
+### Design-system maintenance map
+
+- `app/globals.css` owns Tailwind imports, shadcn theme variables, neutral
+  light/dark tokens, responsive type scale, prose defaults, and Mermaid/card
+  surface styling.
+- `components.json`, `components/ui/*`, and `lib/utils.ts` are shadcn-owned
+  source files. Add new primitives with `pnpm dlx shadcn@latest add <name>` and
+  keep local edits minimal.
+- `components/DocsSearch.tsx` owns the global search interaction. It uses
+  shadcn `Button`, `Command`, and `Dialog`, supports `⌘K` / `Ctrl+K`, and
+  navigates through Next's App Router.
+- `components/SidebarNav.tsx` owns the docs navigation shell. Section headings
+  such as `Front matter` and `Part I · Foundations` stay visible, while leading
+  chapter number prefixes are stripped from sidebar item labels only.
+- `app/page.tsx`, `app/docs/[...slug]/page.tsx`, and `app/diagrams/page.tsx`
+  compose the docs screens with Tailwind utilities over the shared token layer.
+- `lib/docs.ts` owns the manifest, grouping, previous/next navigation, diagram
+  loading, and the plain-text search index.
 
 ## Adding a chapter
 
 1. Create the markdown file in `../prd/` (or `../prd/appendices/`).
 2. Add an entry to the `DOC_MANIFEST` array in `lib/docs.ts` — specify the
   slug, the part grouping, the order, and the relative path.
-3. Save. Dev server reloads automatically.
+3. Use the desired reader-facing H1 in the markdown file. Numeric filename/order
+  prefixes are preserved for routing and sort order, but sidebar labels remove
+  leading numeric prefixes.
+4. Save. Dev server reloads automatically.
 
 ## Adding a diagram
 
