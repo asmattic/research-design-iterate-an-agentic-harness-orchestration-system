@@ -23,29 +23,33 @@ const DIAGRAM_META: Record<string, { question: string; chapter: string }> = {
 export default function DiagramsPage() {
   const diagrams = listDiagrams();
   return (
-    <div className="layout">
+    <div className="grid min-h-screen grid-cols-[18rem_1fr] bg-background max-lg:grid-cols-1">
       <SidebarNav />
-      <main className="site-main">
-        <div className="meta">Workspace</div>
-        <h1>All diagrams</h1>
-        <p>
+      <main className="w-full max-w-6xl px-6 py-12 lg:px-14 lg:py-16">
+        <div className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          Workspace
+        </div>
+        <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.06em] text-foreground sm:text-6xl">
+          All diagrams
+        </h1>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
           Eleven Mermaid diagrams, one per architectural question. Each appears in
           its referenced chapter. This page is an at-a-glance index.
         </p>
         {diagrams.map(d => {
           const meta = DIAGRAM_META[d.id];
           return (
-            <section key={d.id} id={d.id} style={{ marginTop: '2rem' }}>
-              <h2 style={{ margin: '0 0 0.25rem' }}>
+            <section key={d.id} id={d.id} className="mt-10 rounded-xl border border-border bg-card p-5">
+              <h2 className="m-0 text-2xl font-semibold tracking-[-0.03em] text-foreground">
                 {d.id}
                 {meta && (
-                  <span style={{ marginLeft: '0.5rem', color: 'var(--fg-muted)', fontSize: '0.9rem', fontWeight: 400 }}>
+                  <span className="ml-2 align-middle text-sm font-normal text-muted-foreground">
                     {meta.chapter}
                   </span>
                 )}
               </h2>
               {meta && (
-                <p style={{ marginTop: 0, color: 'var(--fg-muted)' }}>{meta.question}</p>
+                <p className="mt-1 text-muted-foreground">{meta.question}</p>
               )}
               <Mermaid chart={d.body} caption={`${d.id}.mermaid`} />
             </section>

@@ -16,7 +16,7 @@ type Props = {
  * client render latency is invisible.
  *
  * How: each instance generates a unique id, initializes the mermaid library
- * once per page with the Anthropic theme variables, and renders on mount.
+ * once per page with the docs theme variables, and renders on mount.
  */
 export function Mermaid({ chart, caption }: Props) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
@@ -31,7 +31,7 @@ export function Mermaid({ chart, caption }: Props) {
       try {
         const mermaid = (await import('mermaid')).default;
 
-        // Theme picked up from Anthropic brand tokens (see app/globals.css).
+        // Theme picked up from docs design tokens (see app/globals.css).
         // We initialize once per mount — mermaid.initialize is idempotent.
         const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         mermaid.initialize({
@@ -40,13 +40,13 @@ export function Mermaid({ chart, caption }: Props) {
           fontFamily: "'Lora', 'Georgia', serif",
           theme: 'base',
           themeVariables: {
-            background: dark ? '#1e1d1b' : '#faf9f5',
-            primaryColor: dark ? '#2d2c29' : '#e8e6dc',
-            primaryTextColor: dark ? '#faf9f5' : '#141413',
-            primaryBorderColor: dark ? '#4a4842' : '#b0aea5',
-            lineColor: dark ? '#b0aea5' : '#585856',
-            secondaryColor: '#d97757',
-            tertiaryColor: '#6a9bcc',
+            background: dark ? '#0a0a0a' : '#ffffff',
+            primaryColor: dark ? '#171717' : '#f5f5f5',
+            primaryTextColor: dark ? '#ededed' : '#111111',
+            primaryBorderColor: dark ? '#3f3f46' : '#d4d4d4',
+            lineColor: dark ? '#a1a1a1' : '#666666',
+            secondaryColor: dark ? '#262626' : '#fafafa',
+            tertiaryColor: dark ? '#111111' : '#f6f6f6',
             fontSize: '14px',
           },
         });

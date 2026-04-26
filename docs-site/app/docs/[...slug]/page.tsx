@@ -39,11 +39,13 @@ export default async function DocPage({ params }: PageProps) {
   const preprocessed = preprocessMarkdown(doc.body);
 
   return (
-    <div className="layout">
+    <div className="grid min-h-screen grid-cols-[18rem_1fr] bg-background max-lg:grid-cols-1">
       <SidebarNav activeSlug={fullSlug} />
-      <main className="site-main">
-        <article>
-          <div className="meta">{doc.part}</div>
+      <main className="w-full max-w-6xl px-6 py-12 lg:px-14 lg:py-16">
+        <article className="docs-prose max-w-3xl">
+          <div className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            {doc.part}
+          </div>
           <h1>{doc.title}</h1>
           <MDXRemote
             source={preprocessed}
@@ -58,11 +60,17 @@ export default async function DocPage({ params }: PageProps) {
               },
             }}
           />
-          <div className="pager">
+          <div className="mt-12 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
             {prev ? (
-              <Link href={`/docs/${prev.slug}`} aria-label={`Previous: ${prev.title}`}>
-                <small>← Previous</small>
-                {prev.title}
+              <Link
+                href={`/docs/${prev.slug}`}
+                aria-label={`Previous: ${prev.title}`}
+                className="rounded-xl border border-border bg-card p-4 text-card-foreground no-underline transition hover:bg-muted"
+              >
+                <small className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  ← Previous
+                </small>
+                <span className="font-medium">{prev.title}</span>
               </Link>
             ) : (
               <span />
@@ -71,10 +79,12 @@ export default async function DocPage({ params }: PageProps) {
               <Link
                 href={`/docs/${next.slug}`}
                 aria-label={`Next: ${next.title}`}
-                style={{ textAlign: 'right' }}
+                className="rounded-xl border border-border bg-card p-4 text-right text-card-foreground no-underline transition hover:bg-muted"
               >
-                <small>Next →</small>
-                {next.title}
+                <small className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  Next →
+                </small>
+                <span className="font-medium">{next.title}</span>
               </Link>
             ) : (
               <span />
