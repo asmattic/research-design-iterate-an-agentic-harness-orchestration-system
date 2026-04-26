@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "installCommand": "cd docs-site && npx -y pnpm@10.33.0 install --frozen-lockfile",
+  "installCommand": "npm install --no-package-lock && cd docs-site && npx -y pnpm@10.33.0 install --frozen-lockfile",
   "buildCommand": "cd docs-site && npx -y pnpm@10.33.0 build",
   "devCommand": "cd docs-site && pnpm dev --port $PORT",
   "outputDirectory": "docs-site/.next",
