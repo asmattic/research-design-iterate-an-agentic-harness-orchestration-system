@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "installCommand": "npm install -g pnpm@10.33.0 && cd docs-site && pnpm install --frozen-lockfile",
-  "buildCommand": "npm install -g pnpm@10.33.0 && cd docs-site && pnpm build",
+  "installCommand": "cd docs-site && npx -y pnpm@10.33.0 install --frozen-lockfile",
+  "buildCommand": "cd docs-site && npx -y pnpm@10.33.0 build",
   "devCommand": "cd docs-site && pnpm dev --port $PORT",
   "outputDirectory": "docs-site/.next",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- docs-site/ prd/ diagrams/ vercel.json || exit 1"
