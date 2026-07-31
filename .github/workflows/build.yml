@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [main]
+    branches: [main, feat/demo-workflow-example]
   pull_request:
-    branches: [main]
+    branches: [main, feat/demo-workflow-example]
 
 # Cancel older runs on the same ref to keep CI cheap.
 concurrency:
