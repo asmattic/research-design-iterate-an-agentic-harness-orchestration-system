@@ -14,7 +14,8 @@
     "start": "next start --port 4567",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:js": "pnpm run typecheck && pnpm run build && node scripts/smoke-test.mjs"
+    "test:unit": "node --test scripts/preprocess.test.mjs",
+    "test:js": "pnpm run typecheck && pnpm run test:unit && pnpm run build && node scripts/smoke-test.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
