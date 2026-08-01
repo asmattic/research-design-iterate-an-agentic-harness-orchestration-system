@@ -26,6 +26,18 @@ Each entry: full citation, one-line summary, and the specific architectural deci
 - **Summary:** Simulated software company with role-playing agents. Instructive failure modes.
 - **Justifies:** §07's case against free-form peer chat; §18 critique.
 
+**Pocock, M. (2026).** *mattpocock/skills* — the `wayfinder`, `handoff`, `to-spec`, `to-tickets`, `implement`, and `code-review` skills. GitHub repository (synced fork `asmattic/skills` @ `6765cf6`).
+- **Summary:** Field-tested agent-skill workflow: large efforts planned as a shared map of decision tickets on an issue tracker, worked one ticket per session until a spec emerges, then executed ticket-by-ticket with a two-axis review.
+- **Justifies:** The two-phase campaign shape and map semantics (§05, §6.3, §15.5); the axis separation rule (§9.2); partial answers to Q6/Q10/Q13 (§22). Full mapping in `WAYFINDER-DESIGN.md`.
+
+**Pocock, M. (2026).** *mattpocock/skills: A complete AI Coding workflow, end-to-end.* YouTube (`M6mYodf0dJM`).
+- **Summary:** Tutorial of the main flow: grill → to-spec → to-tickets → implement one context window per ticket → two-axis review, with explicit "smart zone" context-budget discipline (~140K).
+- **Justifies:** One-ticket-per-session as execution policy (§6.3); fresh-context sub-agent review rationale (§9.2 axis separation).
+
+**Pocock, M. (2026).** *LIVE: The /wayfinder Demo.* YouTube (`251hsWgoTPM`).
+- **Summary:** A full wayfinder map charted and worked live: parallel sessions claiming decision tickets, research subagents fanned out, fog graduated, scope ruled out, prototype-raised fidelity.
+- **Justifies:** Claim-by-assignment and derived-frontier mechanics (§6.3, §15.5); the decision-vs-implementation ticket distinction (§05); the automation-gap product case (`WAYFINDER-DESIGN.md` §6).
+
 ---
 
 ## Pillar 2 — Mixture of Experts / Agents

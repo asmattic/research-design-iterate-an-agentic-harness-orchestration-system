@@ -52,6 +52,8 @@ Questions this PRD does not fully resolve. Each has a proposed Round 2 / Round 3
 
 **Resolution path.** Round 2 implements the amendment workflow explicitly. Round 3 evaluates whether that disruption cost is acceptable vs. alternatives.
 
+**Partial answer (2026-07-31, `WAYFINDER-DESIGN.md`).** The wayfinder re-base narrows the cases needing amendment: fog absorbs "we didn't know yet" (in-scope uncertainty is expected state, not drift), and the out-of-scope ledger absorbs "we now know it's not this" (ruled-out work is recorded, never silently resumed). A true destination redraw remains a human INTENT amendment — and per wayfinder's rule, it starts a fresh effort rather than resuming the old map.
+
 ## Q7 — Event log retention and search at scale
 
 **Context.** §10 sets 2-year default retention. A high-throughput deployment could produce hundreds of GB / year.
@@ -84,6 +86,8 @@ Questions this PRD does not fully resolve. Each has a proposed Round 2 / Round 3
 
 **Resolution path.** Round 2 uses each adapter's native permission prompt. Round 3 ships a web-based approval dashboard as an optional add-on.
 
+**Partial answer (2026-07-31, `WAYFINDER-DESIGN.md`).** The campaign map lives on the issue tracker, so the tracker's own UI is a zero-build human surface: HITL/AFK ticket typing declares up front which tickets need a human, native blocking edges render the frontier visually, and claim-by-assignment shows who holds what. Approval *gates* still use the adapter's native prompt, but ambient campaign visibility no longer waits on the Round 3 dashboard.
+
 ## Q11 — Confidence scoring honesty
 
 **Context.** §9 uses self-reported confidences as an input to weighting. §14 calibrates with Brier/ECE.
@@ -107,6 +111,8 @@ Questions this PRD does not fully resolve. Each has a proposed Round 2 / Round 3
 **What we don't know.** Whether the protocol should be standardized at a scope broader than this project, or remain project-internal.
 
 **Resolution path.** Round 3 proposes an interop spec. If there's uptake, evolve toward an RFC-style standard.
+
+**Partial answer (2026-07-31, `WAYFINDER-DESIGN.md`).** Wayfinder demonstrates a working interop pattern at the *state* layer: campaign state expressed as tracker issues is readable by any tool with tracker access (GitHub, GitLab, Linear, Jira, local markdown), with per-repo capability docs telling each runtime how to express the operations. The protocol question narrows to the *packet* layer — schemas and event log — which stays project-internal until Round 3.
 
 ## Q14 — What the "retrospective agent" itself is
 

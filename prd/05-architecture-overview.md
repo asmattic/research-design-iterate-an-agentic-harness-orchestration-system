@@ -85,6 +85,17 @@ The corresponding Mermaid version is **D01 (System Layers)** in `/diagrams/`.
 
 **Deterministic Verifier.** A code-based arbitrator. Unit tests for code claims, type checks for schema claims, database lookups for factual claims, linters for style claims. Where a claim is testable, the verifier beats any LLM opinion. Where a claim isn't testable, the verifier abstains and the LLM-as-judge takes over (§09).
 
+## The two-phase campaign shape
+
+A campaign runs in two phases with different packet kinds, adopting the loop of mattpocock/skills' *wayfinder* (see `WAYFINDER-DESIGN.md` for the full mapping and rationale):
+
+1. **Wayfinding phase (decide).** The campaign's open questions are charted as *decision tickets* on a shared map anchored to the destination (the INTENT goal). Sessions work the *frontier* — open, unblocked, unclaimed tickets — one ticket per session, resolving decisions and graduating *fog* (questions not yet stateable precisely) into new tickets. Research tickets fan out to parallel AFK subagents. The phase ends when no tickets and no fog remain: the way is clear.
+2. **Execution phase (build).** A fresh session synthesizes the map into a spec whose sections link back to the decision tickets that justify them. The human ratifies the spec — the phase-boundary gate — and it is sliced into implementation tickets sized to one context window each, implemented one session apiece, then verified by the two-axis review.
+
+The load-bearing distinction: **decision tickets are resolved by making a decision; implementation tickets are where decisions get reified.** Small campaigns skip the map entirely — if charting surfaces no fog, the whole journey fits one session.
+
+The loop is diagrammed in **D12 (Wayfinder loop)** in `/diagrams/`.
+
 ## The supporting substrates
 
 - **Tiered Memory (§10)** — L0 working (ephemeral), L1 hot (KV/SQLite, last N turns of this campaign), L2 indexed (vector + SQL, cross-campaign), L3 cold (filesystem archive, event log).
@@ -101,6 +112,7 @@ The corresponding Mermaid version is **D01 (System Layers)** in `/diagrams/`.
 - Reflection-as-memory: Reflexion, Self-Refine.
 - Process supervision: Lightman et al.
 - Context curation: Anthropic context-engineering posts, Liu et al.
+- Campaign loop mechanics (map / decision tickets / frontier / fog / claim-by-assignment): mattpocock/skills' wayfinder (Appendix C; `WAYFINDER-DESIGN.md`).
 
 **Novel emphasis in this PRD (not novel in isolation — novel in combination):**
 - The **Orchestrator System** as its own named layer with six explicit sub-responsibilities (§06).

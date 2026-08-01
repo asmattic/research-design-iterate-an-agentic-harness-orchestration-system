@@ -37,6 +37,8 @@ Each component gets (a) a purpose statement, (b) its inputs/outputs, (c) the fai
 - In: human-authored; modified only via explicit human ratification.
 - Out: loaded into every cohort sub-orchestrator, every drift check, every retrospective.
 
+**Relation to the campaign map.** The `# Goal` section is the campaign's **destination** in the wayfinder sense — it fixes scope, and naming it is the first act of charting. `# Non-goals` seeds the map's out-of-scope ledger: work ruled beyond the destination never graduates back onto the frontier (see §05 two-phase campaign shape; `WAYFINDER-DESIGN.md`).
+
 **Mitigates.** F1 (intent drift).
 
 ---
@@ -78,6 +80,13 @@ Decide:
 (d) declare campaign complete.
 Output must be one of the four actions with justification.
 ```
+
+**Campaign loop mechanics.** The primary orchestrator runs the two-phase loop of §05 (diagram **D12, Wayfinder loop**):
+
+- **The map is an index, not a store.** Orchestrator State (§15.5) carries the destination, a one-line-per-decision index, the fog ledger, and the out-of-scope ledger; decision detail lives in the event log and is zoomed on demand. This is the same pointer-not-copy discipline as tiered memory (§10).
+- **The frontier is derived, never stored:** open ∧ all blockers closed ∧ unclaimed. Dispatch draws from the frontier.
+- **Claim-by-assignment.** A session claims a ticket by assigning it to itself *before any work*; an open, unassigned ticket is unclaimed. Concurrent sessions skip claimed tickets.
+- **One ticket per session** (research tickets excepted — they run in separate subagent contexts). This is the same context-budget evidence as above, applied as an execution policy.
 
 **Mitigates.** F2 (context rot), F1 (intent drift), F6 (runaway cost via explicit budget visibility).
 

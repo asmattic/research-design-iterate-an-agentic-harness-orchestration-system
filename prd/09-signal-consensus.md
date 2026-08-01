@@ -45,6 +45,8 @@ confidence     = sum(w_i in leading cluster) / sum(all w_i)
 
 For categorical claims, the packet reports the top-K categories with probability mass, preserving minority positions.
 
+**Axis separation rule.** Aggregation only ever happens *within* an evaluation axis, never across axes. When a task is reviewed along deliberately separate axes — e.g. spec-fidelity vs. coding-standards in a two-axis review, or safety vs. performance in a guardrail pass — each axis's verdict is reported side by side, and no single winner is picked across them. Cross-axis reranking is precisely the masking the separation exists to prevent: a change can pass one axis and fail the other, and merging the verdicts hides the failure. (Adopted from the two-axis `code-review` skill's no-rerank rule; see `WAYFINDER-DESIGN.md` §5.6.) This is the same principle as dissent preservation, applied at the axis level.
+
 ## 9.3 The three-valued outcome
 
 When a follow-up swarm re-examines a prior conclusion (e.g., after new evidence arrives, or during a retrospective pass), the outcome must be one of three values — not just "changed" or "unchanged."

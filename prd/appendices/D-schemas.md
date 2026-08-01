@@ -68,7 +68,7 @@ All schemas use JSON-Schema Draft 2020-12. Referenced as `$ref: "https://harness
         "adapter": { "type": "string" }
       }
     },
-    "kind": { "type": "string", "enum": ["emission", "tool_call", "tool_result", "decision", "verifier_result", "drift_check", "approval_request", "approval_decision", "guardrail_event", "memory_load", "memory_write", "error"] },
+    "kind": { "type": "string", "enum": ["emission", "tool_call", "tool_result", "decision", "verifier_result", "drift_check", "approval_request", "approval_decision", "guardrail_event", "memory_load", "memory_write", "error", "ticket_claimed", "ticket_resolved", "fog_graduated", "scope_ruled_out"] },
     "payload": { "type": "object" },
     "refs": {
       "type": "object",
@@ -205,6 +205,47 @@ All schemas use JSON-Schema Draft 2020-12. Referenced as `$ref: "https://harness
     "started_at": { "type": "string", "format": "date-time" },
     "intent_ref": { "type": "string" },
     "intent_hash": { "type": "string" },
+    "phase": { "type": "string", "enum": ["wayfinding", "execution"] },
+    "destination": { "type": "string" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticket_ref", "gist"],
+        "properties": {
+          "ticket_ref": { "type": "string" },
+          "gist": { "type": "string" }
+        }
+      }
+    },
+    "fog": { "type": "array", "items": { "type": "string" } },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gist", "reason"],
+        "properties": {
+          "gist": { "type": "string" },
+          "reason": { "type": "string" },
+          "ticket_ref": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "tickets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref", "type", "mode", "status"],
+        "properties": {
+          "ref": { "type": "string" },
+          "type": { "type": "string", "enum": ["grilling", "prototype", "research", "task", "implementation"] },
+          "mode": { "type": "string", "enum": ["hitl", "afk"] },
+          "status": { "type": "string", "enum": ["open", "claimed", "closed", "out_of_scope"] },
+          "blocked_by": { "type": "array", "items": { "type": "string" } },
+          "assignee": { "type": ["string", "null"] }
+        }
+      }
+    },
     "plan": {
       "type": "object",
       "properties": {
