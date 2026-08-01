@@ -1,0 +1,6 @@
+{
+  "name": "rental-synthetic",
+  "description": "20-scenario synthetic rental underwriting benchmark from the PRD's rental acquisition worked example (prd/14-evaluation.md / prd/17): scenarios with ground-truth outcomes (deal cash-flow at target rate, lease standing) plus synthetic variations injecting zoning changes, tax changes, and market shifts.",
+  "scorers": ["calibration", "drift", "completion", "cost", "safety"],
+  "status": "planned"
+}
