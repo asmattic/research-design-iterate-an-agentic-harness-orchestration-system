@@ -1,0 +1,14 @@
+{
+  "campaign_id": "camp_2026_04_tampa",
+  "cohort": "finance",
+  "task_id": "task_underwriting_01",
+  "outcome_type": "weakened",
+  "consensus": {
+    "value": 285000,
+    "value_type": "numeric",
+    "confidence": 0.87
+  },
+  "contributing_agents": [
+    { "agent_id": "finance_budget_conservative_v2", "weight": 1.2 }
+  ]
+}

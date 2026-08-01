@@ -1,0 +1,64 @@
+{
+  "campaign_id": "camp_2026_04_tampa",
+  "started_at": "2026-04-15T14:00:00Z",
+  "intent_ref": "campaigns/tampa/INTENT.md",
+  "intent_hash": "sha256:9f2b1c4e8a7d3f6051e2c9b8a4d7e0f13c6a9d2e5b8f1a4c7d0e3b6a9c2f5e81",
+  "phase": "wayfinding",
+  "destination": "A decision-complete underwriting spec for the Tampa acquisition",
+  "decisions": [
+    { "ticket_ref": "tkt_zoning_str", "gist": "STR permitted with county license; HOA silent" }
+  ],
+  "fog": [
+    "How the lender treats the ADU income — can't state the question precisely until the appraisal route is decided"
+  ],
+  "out_of_scope": [
+    {
+      "gist": "Property-management vendor selection",
+      "reason": "beyond the underwriting destination",
+      "ticket_ref": null
+    }
+  ],
+  "tickets": [
+    {
+      "ref": "tkt_appraisal_route",
+      "type": "grilling",
+      "mode": "hitl",
+      "status": "open",
+      "blocked_by": ["tkt_zoning_str"],
+      "assignee": null
+    },
+    {
+      "ref": "tkt_str_comps_research",
+      "type": "research",
+      "mode": "afk",
+      "status": "closed",
+      "blocked_by": [],
+      "assignee": "research_swarm_02"
+    }
+  ],
+  "plan": {
+    "steps": [
+      { "step_id": "step_01", "description": "Chart the underwriting map", "cohort": "finance", "status": "done" },
+      { "step_id": "step_02", "description": "Work the decision frontier", "cohort": "finance", "status": "in_progress" }
+    ],
+    "current_step": 1
+  },
+  "active_cohorts": ["finance", "legal"],
+  "budget": {
+    "tokens_used": 847000,
+    "tokens_budget": 2000000,
+    "usd_used": 8.4,
+    "usd_budget": 25.0,
+    "wall_clock_ms_used": 5400000,
+    "wall_clock_ms_budget": 28800000
+  },
+  "drift": {
+    "signal_a": 0.04,
+    "signal_b": 92,
+    "last_checked": "2026-04-18T09:40:00Z",
+    "status": "ok"
+  },
+  "pending_approvals": [],
+  "recent_packets": ["pkt_underwriting_01_r1"],
+  "memory_load_refs": ["mem_20260401_rental_tampa_zoning", "mem_20260322_tampa_market_baseline"]
+}

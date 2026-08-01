@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness.example/schemas/v0.2/agent-contract.schema.json",
+  "title": "Agent Contract",
+  "type": "object",
+  "required": ["agent_id", "version", "role", "cohort", "model_family", "system_prompt_ref", "input_schema", "output_schema"],
+  "properties": {
+    "agent_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "role": { "type": "string" },
+    "cohort": { "type": "string" },
+    "model_family": { "type": "string", "enum": ["claude-opus-class", "claude-sonnet-class", "claude-haiku-class", "gpt-4-class", "gpt-5-class", "gemini-2.5-class", "open-source", "other"] },
+    "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+    "max_tokens_out": { "type": "integer", "minimum": 1 },
+    "system_prompt_ref": { "type": "string", "description": "Path or URI to the system prompt file" },
+    "tools": { "type": "array", "items": { "type": "string" } },
+    "input_schema": { "oneOf": [{ "type": "object" }, { "type": "string", "format": "uri-reference" }] },
+    "output_schema": { "oneOf": [{ "type": "object" }, { "type": "string", "format": "uri-reference" }] },
+    "calibration": {
+      "type": "object",
+      "properties": {
+        "brier_rolling": { "type": "number", "minimum": 0, "maximum": 1 },
+        "ece_rolling": { "type": "number", "minimum": 0, "maximum": 1 },
+        "brier_sample_size": { "type": "integer" },
+        "last_updated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "guardrails": { "type": "array", "items": { "type": "string" } },
+    "constitution_ref": { "type": "string" }
+  }
+}

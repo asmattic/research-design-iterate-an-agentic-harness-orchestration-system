@@ -1,0 +1,12 @@
+{
+  "event_id": "evt_01jg8w3k9r2qazx8",
+  "campaign_id": "camp_2026_04_tampa",
+  "t": "2026-04-18T09:42:17.123Z",
+  "emitter": {
+    "kind": "agent",
+    "id": "finance_budget_conservative_v2",
+    "adapter": "claude_code"
+  },
+  "kind": "ticket_reopened",
+  "payload": {}
+}

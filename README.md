@@ -9,7 +9,7 @@ This repository contains the source PRD, diagram set, docs site, and (forthcomin
 ## Status
 
 - **Round 1 (complete, 2026-04-18)** — PRD v0.1.0. 25 chapters, 5 appendices, 11 Mermaid diagrams, Next.js 16 docs site. Harness protocol version 0.1.0.
-- **Round 2 (next)** — Reference scaffolding (templates + drift_check + retrospective + consensus + memory_index + event_log), Orchestrator System Python package, deterministic verifier, eval harness prototype, Claude Code adapter, partial rental-toolkit port. Schema target: v0.2.0.
+- **Round 2 (in progress, started 2026-07-31)** — Protocol package shipped first: `packages/harness-protocol/` (canonical v0.2 JSON Schemas + example fixtures) and `packages/harness-protocol-py/` (Python `harness-protocol` with validators + conformance runner). Remaining: reference scaffolding (templates + drift_check + retrospective + consensus + memory_index + event_log), Orchestrator System Python package, deterministic verifier, eval harness prototype, Claude Code adapter, partial rental-toolkit port. Orchestration loop re-based on wayfinder — see `WAYFINDER-DESIGN.md`. Schema target: v0.2.0.
 - **Round 3+** — Multi-adapter coverage (Codex CLI, Cursor) and benchmark integration (SWE-bench Verified, GAIA, BrowseComp, MINT).
 
 ## Layout
@@ -19,6 +19,7 @@ This repository contains the source PRD, diagram set, docs site, and (forthcomin
 | `prd/`         | Source markdown. `README.md` is the spine. Chapters `00-preface.md`–`23-next-report.md`. Appendices `A`–`E` under `appendices/`. |
 | `diagrams/`    | 11 Mermaid files `D01`–`D11`. Each answers one architectural question (see `prd/appendices/A-diagram-index.md`). |
 | `docs-site/`   | Next.js 16 App Router project that renders the PRD with Tailwind CSS v4, shadcn/ui search primitives, and a Vercel-docs-inspired design system. Node 24, pnpm 10. See `docs-site/README.md`. |
+| `packages/`    | Round 2 protocol artifacts. `harness-protocol/` holds the canonical v0.2 JSON Schemas + example fixtures (Appendix D is the design sketch; these files are normative). `harness-protocol-py/` is the installable Python package. |
 | `memory/`      | Snapshot of the Cowork session memory. Refreshed via `scripts/sync-memory.sh`.                     |
 | `scripts/`     | Maintenance scripts. Currently: `sync-memory.sh`.                                                  |
 

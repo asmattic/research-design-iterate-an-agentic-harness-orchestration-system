@@ -1,0 +1,10 @@
+{
+  "agent_id": "finance_budget_conservative_v2",
+  "version": "2.1",
+  "role": "budget analyst, conservative bias",
+  "cohort": "finance",
+  "model_family": "claude-opus-class",
+  "system_prompt_ref": "prompts/finance/budget_conservative.md",
+  "input_schema": { "$ref": "#/schemas/FinanceBudgetInput" },
+  "output_schema": { "$ref": "#/schemas/FinanceBudgetOutput" }
+}

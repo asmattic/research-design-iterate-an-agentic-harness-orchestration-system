@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "harness-protocol"
+version = "0.2.0"
+description = "Harness-agnostic orchestration protocol: schemas, validators, conformance runner"
+requires-python = ">=3.10"
+dependencies = ["jsonschema>=4.18"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/harness_protocol"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"../harness-protocol/schemas" = "harness_protocol/_assets/schemas"
+"../harness-protocol/examples" = "harness_protocol/_assets/examples"

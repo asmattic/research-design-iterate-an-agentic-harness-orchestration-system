@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness.example/schemas/v0.2/consensus-packet.schema.json",
+  "title": "Consensus Packet",
+  "type": "object",
+  "required": ["campaign_id", "cohort", "task_id", "outcome_type", "consensus", "contributing_agents"],
+  "properties": {
+    "campaign_id": { "type": "string" },
+    "cohort": { "type": "string" },
+    "task_id": { "type": "string" },
+    "outcome_type": { "type": "string", "enum": ["strengthened", "revised", "unchanged_but_calibrated"] },
+    "consensus": {
+      "type": "object",
+      "required": ["value", "value_type", "confidence"],
+      "properties": {
+        "value": {},
+        "value_type": { "type": "string", "enum": ["numeric", "categorical", "structured", "prose", "boolean"] },
+        "interval": {
+          "type": "object",
+          "properties": {
+            "low": {},
+            "high": {},
+            "units": { "type": "string" }
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "dissent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["position", "agents", "weight_share"],
+        "properties": {
+          "position": {},
+          "agents": { "type": "array", "items": { "type": "string" } },
+          "reasoning": { "type": "string" },
+          "weight_share": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "contributing_agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "weight"],
+        "properties": {
+          "agent_id": { "type": "string" },
+          "emission_ref": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "verifier_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "verifier_id": { "type": "string" },
+          "result": { "type": "string", "enum": ["pass", "fail", "abstain"] },
+          "evidence_ref": { "type": "string" }
+        }
+      }
+    },
+    "bs_flags": {
+      "type": "object",
+      "properties": {
+        "hallucinated": { "type": "integer" },
+        "over_confident": { "type": "integer" },
+        "unsupported": { "type": "integer" },
+        "clean": { "type": "integer" }
+      }
+    },
+    "context_used": {
+      "type": "object",
+      "properties": {
+        "memory_refs": { "type": "array", "items": { "type": "string" } },
+        "tools_called": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "tokens": { "type": "integer" },
+        "wall_clock_ms": { "type": "integer" },
+        "usd": { "type": "number" }
+      }
+    }
+  }
+}

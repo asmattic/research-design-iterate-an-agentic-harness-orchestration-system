@@ -1,0 +1,21 @@
+{
+  "agent_id": "finance_budget_conservative_v2",
+  "version": "2.1.0",
+  "role": "budget analyst, conservative bias",
+  "cohort": "finance",
+  "model_family": "claude-opus-class",
+  "temperature": 0.2,
+  "max_tokens_out": 4096,
+  "system_prompt_ref": "prompts/finance/budget_conservative.md",
+  "tools": ["calculator", "mortgage_amortizer", "comps_lookup"],
+  "input_schema": { "$ref": "#/schemas/FinanceBudgetInput" },
+  "output_schema": { "$ref": "#/schemas/FinanceBudgetOutput" },
+  "calibration": {
+    "brier_rolling": 0.11,
+    "ece_rolling": 0.04,
+    "brier_sample_size": 87,
+    "last_updated": "2026-04-10T12:00:00Z"
+  },
+  "guardrails": ["numeric_bounds", "citation_required"],
+  "constitution_ref": "constitutions/finance.md"
+}
