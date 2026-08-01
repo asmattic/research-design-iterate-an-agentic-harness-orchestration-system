@@ -1,7 +1,8 @@
-"""Phase 2B behavior contract for harness_reference.retrospective.
+"""Phase 2B acceptance suite for harness_reference.retrospective.
 
-Split out of test_phase2b_behavior.py; see test_2b_event_log.py docstring for
-the marker protocol.
+Split out of test_phase2b_behavior.py. The strict-xfail markers were removed
+when the implementation landed; these tests now run green as the acceptance
+contract.
 """
 
 from __future__ import annotations
@@ -15,12 +16,6 @@ if not hasattr(hr, "__version__"):
 retro_mod = pytest.importorskip("harness_reference.retrospective")
 
 
-def xfail2b(reason: str):
-    return pytest.mark.xfail(strict=True, raises=NotImplementedError,
-                             reason=f"Phase 2B: {reason}")
-
-
-@xfail2b("verifier failure events yield a weight_adjustment proposal for that agent")
 def test_retrospective_weight_adjustment(valid_event):
     agent_id = valid_event["emitter"]["id"]
     failure = dict(valid_event,
@@ -33,6 +28,17 @@ def test_retrospective_weight_adjustment(valid_event):
     assert any(agent_id in p.target for p in adjustments)
 
 
-@xfail2b("an empty event stream yields no proposals")
 def test_retrospective_empty_stream():
     assert retro_mod.retrospective([]) == []
+
+
+def test_retrospective_drift_pause_yields_memory_entry(valid_event):
+    drift = dict(valid_event,
+                 event_id="evt_01jg8w3k9r2qazy3", kind="drift_check",
+                 payload={"status": "pause", "score": 0.71})
+    proposals = retro_mod.retrospective([valid_event, drift])
+    entries = [p for p in proposals if p.kind == "memory_entry"]
+    assert len(entries) == 1
+    assert entries[0].target == "campaign"
+    assert entries[0].payload == {"note": "drift excursion",
+                                  "event_id": "evt_01jg8w3k9r2qazy3"}

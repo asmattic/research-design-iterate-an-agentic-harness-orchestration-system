@@ -1,7 +1,7 @@
-"""Phase 2B behavior contract for harness_reference.consensus.
+"""Phase 2B acceptance suite for harness_reference.consensus.
 
-Split out of test_phase2b_behavior.py; see test_2b_event_log.py docstring for
-the marker protocol.
+The deterministic consensus aggregator has landed; these tests now run as
+plain assertions (the strict-xfail markers from the contract phase are gone).
 """
 
 from __future__ import annotations
@@ -15,17 +15,11 @@ if not hasattr(hr, "__version__"):
 consensus = pytest.importorskip("harness_reference.consensus")
 
 
-def xfail2b(reason: str):
-    return pytest.mark.xfail(strict=True, raises=NotImplementedError,
-                             reason=f"Phase 2B: {reason}")
-
-
 def _emission(agent_id: str, value: float, weight: float, confidence: float = 0.8) -> dict:
     return {"agent_id": agent_id, "value": value, "weight": weight,
             "confidence": confidence, "reasoning": f"{agent_id} rationale"}
 
 
-@xfail2b("aggregate returns a schema-valid consensus packet preserving dissent")
 def test_consensus_preserves_dissent(valid_event):
     emissions = [_emission("a1", 100.0, 1.0), _emission("a2", 102.0, 1.0),
                  _emission("a3", 99.0, 1.0), _emission("dissenter", 250.0, 0.6)]
@@ -40,7 +34,6 @@ def test_consensus_preserves_dissent(valid_event):
     assert block["interval"]["low"] <= block["value"] <= block["interval"]["high"]
 
 
-@xfail2b("a dissenter below the dissent floor is dropped from the dissent block")
 def test_consensus_floor_drops_small_dissent():
     emissions = [_emission("a1", 100.0, 1.0), _emission("a2", 102.0, 1.0),
                  _emission("a3", 99.0, 1.0), _emission("dissenter", 250.0, 0.3)]

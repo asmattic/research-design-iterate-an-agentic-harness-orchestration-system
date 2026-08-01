@@ -1,7 +1,7 @@
-"""Phase 2B behavior contract for harness_reference.memory_index.
+"""Phase 2B acceptance tests for harness_reference.memory_index.
 
-Split out of test_phase2b_behavior.py; see test_2b_event_log.py docstring for
-the marker protocol.
+Split out of test_phase2b_behavior.py. The module is implemented; the strict
+xfail markers have been removed and these now run as the acceptance tests.
 """
 
 from __future__ import annotations
@@ -15,12 +15,6 @@ if not hasattr(hr, "__version__"):
 memory_index = pytest.importorskip("harness_reference.memory_index")
 
 
-def xfail2b(reason: str):
-    return pytest.mark.xfail(strict=True, raises=NotImplementedError,
-                             reason=f"Phase 2B: {reason}")
-
-
-@xfail2b("MemoryIndex add/get round-trip and tier/tag query filters")
 def test_memory_index_roundtrip_and_query(tmp_path, valid_memory_entry):
     idx = memory_index.MemoryIndex(tmp_path)
     mid = idx.add(valid_memory_entry)
@@ -32,7 +26,6 @@ def test_memory_index_roundtrip_and_query(tmp_path, valid_memory_entry):
     assert idx.query(tags=["no-such-tag"]) == []
 
 
-@xfail2b("resolve follows supersedes chain; superseded entries hidden unless requested")
 def test_memory_index_supersedes_chain(tmp_path, valid_memory_entry):
     idx = memory_index.MemoryIndex(tmp_path)
     first = dict(valid_memory_entry, supersedes=None)

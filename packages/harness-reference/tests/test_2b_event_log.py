@@ -1,9 +1,8 @@
-"""Phase 2B behavior contract for harness_reference.event_log.
+"""Phase 2B acceptance tests for harness_reference.event_log.
 
 Split out of test_phase2b_behavior.py so each module's implementation lane
-owns exactly one behavior-test file. While the module is a stub, every test
-carries strict xfail; the implementing lane removes the markers and these
-become the acceptance tests.
+owns exactly one behavior-test file. The module is implemented; the strict
+xfail markers have been removed and these now run as the acceptance tests.
 """
 
 from __future__ import annotations
@@ -19,12 +18,6 @@ if not hasattr(hr, "__version__"):
 event_log = pytest.importorskip("harness_reference.event_log")
 
 
-def xfail2b(reason: str):
-    return pytest.mark.xfail(strict=True, raises=NotImplementedError,
-                             reason=f"Phase 2B: {reason}")
-
-
-@xfail2b("EventLog append returns event_id; events() filters; JSONL is append-only")
 def test_event_log_append_filter_jsonl(tmp_log_path, valid_event):
     log = event_log.EventLog(tmp_log_path)
     eid = log.append(valid_event)
@@ -41,7 +34,6 @@ def test_event_log_append_filter_jsonl(tmp_log_path, valid_event):
     assert json.loads(lines[1])["event_id"] == second["event_id"]
 
 
-@xfail2b("schema-invalid envelopes are rejected with ValueError, nothing written")
 def test_event_log_rejects_invalid(tmp_log_path):
     log = event_log.EventLog(tmp_log_path)
     with pytest.raises(ValueError):

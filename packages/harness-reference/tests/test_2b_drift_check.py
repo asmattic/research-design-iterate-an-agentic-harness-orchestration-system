@@ -1,7 +1,7 @@
-"""Phase 2B behavior contract for harness_reference.drift_check.
+"""Phase 2B acceptance suite for harness_reference.drift_check.
 
-Split out of test_phase2b_behavior.py; see test_2b_event_log.py docstring for
-the marker protocol.
+The lexical drift-check implementation has landed; these tests now run as
+plain assertions (the strict-xfail markers from the contract phase are gone).
 """
 
 from __future__ import annotations
@@ -15,12 +15,6 @@ if not hasattr(hr, "__version__"):
 drift_mod = pytest.importorskip("harness_reference.drift_check")
 
 
-def xfail2b(reason: str):
-    return pytest.mark.xfail(strict=True, raises=NotImplementedError,
-                             reason=f"Phase 2B: {reason}")
-
-
-@xfail2b("identical intent and state score composite ~0 with status ok")
 def test_drift_identical_is_ok():
     text = "Underwrite the Tampa rental portfolio conservatively within budget."
     result = drift_mod.drift_check(text, text)
@@ -28,7 +22,6 @@ def test_drift_identical_is_ok():
     assert result.status == "ok"
 
 
-@xfail2b("disjoint intent and state exceed the pause threshold")
 def test_drift_disjoint_pauses():
     result = drift_mod.drift_check(
         "Underwrite the Tampa rental portfolio conservatively within budget.",
@@ -38,7 +31,6 @@ def test_drift_disjoint_pauses():
     assert result.status in ("pause", "halt")
 
 
-@xfail2b("status respects warn <= pause threshold ordering")
 def test_drift_threshold_monotonic():
     intent = "Plan the campaign roadmap."
     state = "Plan the campaign roadmap and also restructure the billing stack."

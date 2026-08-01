@@ -12,14 +12,23 @@ Reference scaffolding for the harness orchestration protocol: campaign
 | `consensus` | `aggregate` | §9.2 |
 | `retrospective` | `retrospective`, `Proposal` | §13.2 |
 
-## Status: Phase 2A (stubs)
+## Status: Phase 2B (implemented)
 
-Every public callable raises `NotImplementedError` with a one-line behavior
-summary. Dataclasses, type aliases, and constants are fully defined — they
-are contracts, not behavior. The behavior contract lives in `tests/` as
-strict-xfail tests, which get flipped green in Phase 2B when the
-implementations land. Only `templates_dir()` is fully implemented (asset
-resolution, not Phase 2B behavior).
+All five modules are implemented:
+
+- `event_log` — JSONL append-only event log with schema validation on write.
+- `memory_index` — directory-backed memory store with supersedes resolution.
+- `drift_check` — lexical Jaccard composite drift score against INTENT.
+- `consensus` — deterministic weighted clustering with a dissent floor.
+- `retrospective` — deterministic rules over the event stream: verifier
+  failures become per-agent weight-adjustment proposals; drift pause/halt
+  excursions become campaign memory-entry proposals.
+
+The strict-xfail markers have been removed from `tests/`; the test suite is
+now the acceptance suite and runs green. Deferred to later phases: the
+LLM-as-judge retrospective layer (prompt diffs, rubric scoring — arrives
+with harness-os), vector-based drift signals (Round 3), and template worked
+examples.
 
 Per ROUND-2-PLAN §3.2, each module stays at or under 500 lines through
 Phase 2B.
