@@ -112,18 +112,6 @@ def test_constants() -> None:
     assert consensus.DISSENT_FLOOR == 0.15
 
 
-STUB_CALLS = [
-    pytest.param(lambda: drift_mod.drift_check("intent text", "state summary"), id="drift_check"),
-    pytest.param(lambda: consensus.aggregate([], campaign_id="c", cohort="x", task_id="t"),
-                 id="consensus-aggregate"),
-    pytest.param(lambda: retro_mod.retrospective([]), id="retrospective"),
-    pytest.param(lambda: event_log.validate_envelope({}), id="validate_envelope"),
-    pytest.param(lambda: event_log.EventLog("x"), id="EventLog-init"),
-    pytest.param(lambda: memory_index.MemoryIndex("x"), id="MemoryIndex-init"),
-]
-
-
-@pytest.mark.parametrize("call", STUB_CALLS)
-def test_stub_raises_phase2b(call) -> None:
-    with pytest.raises(NotImplementedError, match="^Phase 2B"):
-        call()
+# The Phase 2A "every stub raises NotImplementedError" pins were retired when
+# Phase 2B implemented the modules; the per-module test_2b_*.py files are the
+# behavior contract now.
