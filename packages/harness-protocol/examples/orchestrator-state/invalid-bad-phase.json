@@ -1,0 +1,11 @@
+{
+  "campaign_id": "camp_2026_04_tampa",
+  "started_at": "2026-04-15T14:00:00Z",
+  "intent_ref": "campaigns/tampa/INTENT.md",
+  "intent_hash": "sha256:9f2b1c4e8a7d3f6051e2c9b8a4d7e0f13c6a9d2e5b8f1a4c7d0e3b6a9c2f5e81",
+  "phase": "charting",
+  "plan": {
+    "steps": [],
+    "current_step": 0
+  }
+}

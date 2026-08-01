@@ -1,0 +1,25 @@
+{
+  "event_id": "evt_01jg8w3k9r2qazx7",
+  "campaign_id": "camp_2026_04_tampa",
+  "task_id": "task_underwriting_01",
+  "parent_event_id": "evt_01jg8w3k9r2qazx6",
+  "t": "2026-04-18T09:42:17.123Z",
+  "emitter": {
+    "kind": "agent",
+    "id": "finance_budget_conservative_v2",
+    "adapter": "claude_code"
+  },
+  "kind": "emission",
+  "payload": {
+    "headline_value": 285000,
+    "confidence": 0.82,
+    "sources": ["comps_lookup:2026-04-17"]
+  },
+  "refs": {
+    "memory_refs": ["mem_20260401_rental_tampa_zoning"],
+    "contract_ref": "agents/finance/budget_conservative.json",
+    "prior_packet_ref": null
+  },
+  "cost": { "tokens_in": 1023, "tokens_out": 486, "wall_clock_ms": 1842 },
+  "flags": ["bs_clean", "verifier_abstain", "guardrail_pass"]
+}

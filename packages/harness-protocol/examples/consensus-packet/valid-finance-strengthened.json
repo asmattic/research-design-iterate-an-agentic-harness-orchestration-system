@@ -1,0 +1,33 @@
+{
+  "campaign_id": "camp_2026_04_tampa",
+  "cohort": "finance",
+  "task_id": "task_underwriting_01",
+  "outcome_type": "strengthened",
+  "consensus": {
+    "value": 285000,
+    "value_type": "numeric",
+    "interval": { "low": 265000, "high": 305000, "units": "usd" },
+    "confidence": 0.87
+  },
+  "dissent": [
+    {
+      "position": 340000,
+      "agents": ["agent_4"],
+      "reasoning": "Comps drawn from the post-2025 waterfront band justify a higher ceiling",
+      "weight_share": 0.16
+    }
+  ],
+  "contributing_agents": [
+    { "agent_id": "finance_budget_conservative_v2", "emission_ref": "evt_01jg8w3k9r2qazx7", "weight": 1.2 },
+    { "agent_id": "finance_budget_aggressive_v1", "emission_ref": "evt_01jg8w3k9r2qazx9", "weight": 0.9 }
+  ],
+  "verifier_results": [
+    { "verifier_id": "numeric_bounds_verifier", "result": "pass", "evidence_ref": "evt_01jg8w3m1d4nchk2" }
+  ],
+  "bs_flags": { "hallucinated": 0, "over_confident": 1, "unsupported": 0, "clean": 4 },
+  "context_used": {
+    "memory_refs": ["mem_20260401_rental_tampa_zoning"],
+    "tools_called": ["comps_lookup", "mortgage_amortizer"]
+  },
+  "cost": { "tokens": 47213, "wall_clock_ms": 42189, "usd": 0.47 }
+}

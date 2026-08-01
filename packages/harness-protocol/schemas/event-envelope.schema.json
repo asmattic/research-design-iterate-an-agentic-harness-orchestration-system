@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness.example/schemas/v0.2/event-envelope.schema.json",
+  "title": "Event Envelope",
+  "type": "object",
+  "required": ["event_id", "campaign_id", "t", "emitter", "kind", "payload"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "campaign_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "parent_event_id": { "type": ["string", "null"] },
+    "t": { "type": "string", "format": "date-time" },
+    "emitter": {
+      "type": "object",
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["agent", "tool", "orchestrator", "verifier", "guardrail", "human", "memory", "drift"] },
+        "id": { "type": "string" },
+        "adapter": { "type": "string" }
+      }
+    },
+    "kind": { "type": "string", "enum": ["emission", "tool_call", "tool_result", "decision", "verifier_result", "drift_check", "approval_request", "approval_decision", "guardrail_event", "memory_load", "memory_write", "error", "ticket_claimed", "ticket_resolved", "fog_graduated", "scope_ruled_out"] },
+    "payload": { "type": "object" },
+    "refs": {
+      "type": "object",
+      "properties": {
+        "memory_refs": { "type": "array", "items": { "type": "string" } },
+        "contract_ref": { "type": "string" },
+        "prior_packet_ref": { "type": ["string", "null"] }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "tokens_in": { "type": "integer" },
+        "tokens_out": { "type": "integer" },
+        "wall_clock_ms": { "type": "integer" },
+        "usd": { "type": "number" }
+      }
+    },
+    "flags": { "type": "array", "items": { "type": "string" } }
+  }
+}

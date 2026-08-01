@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://harness.example/schemas/v0.2/orchestrator-state.schema.json",
+  "title": "Orchestrator State",
+  "type": "object",
+  "required": ["campaign_id", "started_at", "intent_ref", "intent_hash", "plan"],
+  "properties": {
+    "campaign_id": { "type": "string" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "intent_ref": { "type": "string" },
+    "intent_hash": { "type": "string" },
+    "phase": { "type": "string", "enum": ["wayfinding", "execution"] },
+    "destination": { "type": "string" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticket_ref", "gist"],
+        "properties": {
+          "ticket_ref": { "type": "string" },
+          "gist": { "type": "string" }
+        }
+      }
+    },
+    "fog": { "type": "array", "items": { "type": "string" } },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gist", "reason"],
+        "properties": {
+          "gist": { "type": "string" },
+          "reason": { "type": "string" },
+          "ticket_ref": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "tickets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref", "type", "mode", "status"],
+        "properties": {
+          "ref": { "type": "string" },
+          "type": { "type": "string", "enum": ["grilling", "prototype", "research", "task", "implementation"] },
+          "mode": { "type": "string", "enum": ["hitl", "afk"] },
+          "status": { "type": "string", "enum": ["open", "claimed", "closed", "out_of_scope"] },
+          "blocked_by": { "type": "array", "items": { "type": "string" } },
+          "assignee": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step_id": { "type": "string" },
+              "description": { "type": "string" },
+              "cohort": { "type": "string" },
+              "status": { "type": "string", "enum": ["pending", "in_progress", "done", "blocked"] }
+            }
+          }
+        },
+        "current_step": { "type": "integer" }
+      }
+    },
+    "active_cohorts": { "type": "array", "items": { "type": "string" } },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "tokens_used": { "type": "integer" },
+        "tokens_budget": { "type": "integer" },
+        "usd_used": { "type": "number" },
+        "usd_budget": { "type": "number" },
+        "wall_clock_ms_used": { "type": "integer" },
+        "wall_clock_ms_budget": { "type": "integer" }
+      }
+    },
+    "drift": {
+      "type": "object",
+      "properties": {
+        "signal_a": { "type": "number" },
+        "signal_b": { "type": "number" },
+        "last_checked": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["ok", "warn", "pause", "halt"] }
+      }
+    },
+    "pending_approvals": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "recent_packets": { "type": "array", "items": { "type": "string" } },
+    "memory_load_refs": { "type": "array", "items": { "type": "string" } }
+  }
+}

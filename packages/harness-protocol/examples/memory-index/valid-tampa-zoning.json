@@ -1,0 +1,16 @@
+{
+  "memory_id": "mem_20260401_rental_tampa_zoning",
+  "tier": "L2",
+  "scope": "cross_campaign",
+  "domain": "legal",
+  "subdomain": "zoning",
+  "sensitivity": "public",
+  "freshness": "2026-04-01",
+  "expires": null,
+  "confidence": 0.85,
+  "source": "florida-zoning-board-pdf-2025",
+  "contributing_agents": ["legal_zoning_expert"],
+  "supersedes": "mem_20251015_rental_tampa_zoning",
+  "tags": ["tampa", "short-term-rental", "r1-zoning"],
+  "body_ref": "memory/l2/legal/zoning/mem_20260401_rental_tampa_zoning.md"
+}
