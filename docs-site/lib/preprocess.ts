@@ -74,17 +74,27 @@ export function preprocessMarkdown(md: string): string {
   );
 
   // Pass 2 — inline diagram references. Match the first mention of each
-  // `D\d\d-slug.mermaid` and substitute the file body.
-  out = out.replace(
-    /`?(D\d{2}-[a-z0-9-]+)\.mermaid`?/g,
-    (match, id: string) => {
-      if (inlined.has(id)) return match;
-      const body = readDiagram(id);
-      if (!body) return match;
-      inlined.add(id);
-      return `\n\n<Mermaid chart={\`${escapeForTemplateLiteral(body.trim())}\`} caption="${id}.mermaid" />\n\n`;
-    },
-  );
+  // `D\d\d-slug.mermaid` and substitute the file body. Table rows are
+  // skipped: <Mermaid> is block-level, and splicing it into a `| cell |`
+  // breaks the table and leaves the component's chart prop undefined once
+  // MDX-compiled. A table mention also must not consume the one
+  // first-reference slot a prose mention would use.
+  out = out
+    .split('\n')
+    .map((line) => {
+      if (/^\s*\|/.test(line)) return line;
+      return line.replace(
+        /`?(D\d{2}-[a-z0-9-]+)\.mermaid`?/g,
+        (match, id: string) => {
+          if (inlined.has(id)) return match;
+          const body = readDiagram(id);
+          if (!body) return match;
+          inlined.add(id);
+          return `\n\n<Mermaid chart={\`${escapeForTemplateLiteral(body.trim())}\`} caption="${id}.mermaid" />\n\n`;
+        },
+      );
+    })
+    .join('\n');
 
   // Pass 3 — escape stray `<` that would confuse MDX.
   out = escapeStrayAngles(out);
