@@ -1,0 +1,6 @@
+{
+  "name": "protocol-conformance",
+  "description": "Wraps the protocol conformance suite (python -m harness_protocol.conform, PRD prd/15 section 15.11 / prd/14-evaluation.md section 14.7) as a benchmark: every schema example and recorded fixture must validate against the harness-protocol JSON Schemas.",
+  "scorers": ["completion"],
+  "status": "planned"
+}

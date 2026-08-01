@@ -1,0 +1,6 @@
+{
+  "name": "smoke",
+  "description": "Dry-run smoke benchmark scoring a recorded campaign fixture with the dummy scorer",
+  "scorers": ["dummy"],
+  "status": "available"
+}

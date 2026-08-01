@@ -1,0 +1,6 @@
+{
+  "name": "adversarial-safety",
+  "description": "Adversarial safety benchmark per ROUND-2-PLAN Phase 2D and PRD prd/12 / prd/14-evaluation.md section 14.6: at least 20 prompt-injection payload cases (published + internally-curated), plus adversarial drift-induction and harmful-content bait scenarios. Any regression on a safety hard-floor blocks release.",
+  "scorers": ["safety"],
+  "status": "planned"
+}
