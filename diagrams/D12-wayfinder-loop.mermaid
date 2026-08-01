@@ -1,0 +1,57 @@
+%% D12 · Wayfinder loop — the two-phase campaign shape
+%% Answers: How does a campaign move from foggy intent to a ratified spec to execution?
+%% Referenced in §05 Architecture Overview and §06 Core Components.
+%% Mechanics adopted from mattpocock/skills' wayfinder (see WAYFINDER-DESIGN.md).
+
+flowchart TB
+    IDEA["Loose idea<br/>(too big for one session,<br/>wrapped in fog)"]
+
+    subgraph Chart["Chart · one session"]
+        direction TB
+        DEST["Name the destination<br/>(fixes scope = INTENT goal)"]
+        FRONT["Map the frontier breadth-first<br/>(decisions answerable now)"]
+        MAP["Create map + decision tickets<br/>(blocking edges wired second-pass;<br/>fog into Not-yet-specified)"]
+        RES["Fan out research tickets<br/>to parallel AFK subagents"]
+        DEST --> FRONT --> MAP --> RES
+    end
+
+    subgraph Work["Work the frontier · one ticket per session"]
+        direction TB
+        CLAIM["Claim ticket by assignment<br/>(before any work)"]
+        RESOLVE["Resolve: grilling / prototype /<br/>research / task (HITL or AFK)"]
+        RECORD["Record resolution comment,<br/>close ticket, append pointer<br/>to Decisions-so-far index"]
+        GRAD["Graduate fog into new tickets<br/>· or rule out of scope"]
+        CLAIM --> RESOLVE --> RECORD --> GRAD
+        GRAD -.->|"frontier = open ∧<br/>unblocked ∧ unclaimed"| CLAIM
+    end
+
+    GATE{"No open tickets,<br/>no fog?"}
+
+    subgraph Execute["Execution phase"]
+        direction TB
+        SPEC["to-spec in a fresh session<br/>(spec links every section<br/>back to its decision tickets)"]
+        RATIFY["Human ratifies spec<br/>(phase-boundary gate)"]
+        TICKETS["to-tickets: tracer-bullet<br/>implementation tickets,<br/>one context window each"]
+        IMPL["Implement per ticket<br/>(AFK-capable)"]
+        REVIEW["Two-axis review in parallel<br/>sub-agents (Spec · Standards,<br/>no cross-axis reranking)"]
+        HUMAN["Human review"]
+        SPEC --> RATIFY --> TICKETS --> IMPL --> REVIEW --> HUMAN
+    end
+
+    IDEA --> Chart
+    Chart --> Work
+    Work --> GATE
+    GATE -->|"no — keep working"| Work
+    GATE -->|"yes — way is clear"| Execute
+
+    classDef ideaCls fill:#f5e6d3,stroke:#8b5a2b,color:#3a2817,stroke-dasharray: 4 2
+    classDef chartCls fill:#ede4d3,stroke:#7a6545,color:#2d2317
+    classDef workCls fill:#f7f0e3,stroke:#8a7555,color:#2d2317
+    classDef gateCls fill:#fbe7d4,stroke:#c66b2a,color:#3a2817
+    classDef execCls fill:#e8dccc,stroke:#5a4a3a,color:#2d2317
+
+    class IDEA ideaCls
+    class DEST,FRONT,MAP,RES chartCls
+    class CLAIM,RESOLVE,RECORD,GRAD workCls
+    class GATE gateCls
+    class SPEC,RATIFY,TICKETS,IMPL,REVIEW,HUMAN execCls

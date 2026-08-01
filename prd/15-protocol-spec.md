@@ -62,7 +62,7 @@ Every emission (agent output, tool call, orchestrator decision, verifier result,
     "id": "finance_budget_conservative_v2",
     "adapter": "claude_code"
   },
-  "kind": "emission | tool_call | tool_result | decision | verifier_result | drift_check | approval_request | approval_decision",
+  "kind": "emission | tool_call | tool_result | decision | verifier_result | drift_check | approval_request | approval_decision | ticket_claimed | ticket_resolved | fog_graduated | scope_ruled_out",
   "payload": { "...": "..." },
   "refs": {
     "memory_refs": ["mem_..."],
@@ -91,7 +91,26 @@ Shape sketched in §9.6. Full schema in Appendix D. The three critical fields:
   "started_at": "2026-04-15T14:00:00Z",
   "intent_ref": "campaigns/tampa/INTENT.md",
   "intent_hash": "sha256:...",
+  "phase": "wayfinding | execution",
+  "destination": "A decision-complete underwriting spec for the Tampa acquisition",
   "plan": { "steps": [ ... ], "current_step": 4 },
+  "decisions": [
+    { "ticket_ref": "tkt_zoning_str", "gist": "STR permitted with county license; HOA silent" }
+  ],
+  "fog": [ "How the lender treats the ADU income — can't state the question precisely until the appraisal route is decided" ],
+  "out_of_scope": [
+    { "gist": "Property-management vendor selection", "reason": "beyond the underwriting destination", "ticket_ref": null }
+  ],
+  "tickets": [
+    {
+      "ref": "tkt_appraisal_route",
+      "type": "grilling | prototype | research | task | implementation",
+      "mode": "hitl | afk",
+      "status": "open | claimed | closed | out_of_scope",
+      "blocked_by": ["tkt_zoning_str"],
+      "assignee": null
+    }
+  ],
   "active_cohorts": ["finance", "legal"],
   "budget": { "tokens_used": 847000, "tokens_budget": 2000000, "usd_used": 8.40 },
   "drift": { "signal_a": 0.04, "signal_b": 92, "last_checked": "…" },
@@ -102,6 +121,8 @@ Shape sketched in §9.6. Full schema in Appendix D. The three critical fields:
 ```
 
 The state is snapshotted at every primary-orchestrator turn. The latest snapshot is what the primary orchestrator actually reads as its context (§6.3) — it *is* the primary orchestrator's memory.
+
+**Map semantics (wayfinding phase).** `destination`, `decisions`, `fog`, `out_of_scope`, and `tickets` carry the campaign map (§05; `WAYFINDER-DESIGN.md` §5.2). The state is an **index, not a store**: `decisions[]` holds one-line gists pointing at ticket resolutions in the event log, never the detail itself. The **frontier is derived, never stored** — `status == open ∧ blocked_by all closed ∧ assignee == null` — so it can never drift out of sync with the tickets. `phase` gates packet kinds: decision tickets belong to `wayfinding`, implementation tickets to `execution`, and the human-ratified spec is the boundary artifact between them.
 
 ## 15.6 Memory Index entry
 

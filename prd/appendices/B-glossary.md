@@ -16,7 +16,13 @@ Terms are listed alphabetically. Definitions are scoped to this PRD's usage.
 
 **Clean context** — The primary orchestrator's context budget discipline: only INTENT, plan, packets, drift/budget status. No raw agent transcripts.
 
+**Claim-by-assignment** — The concurrency protocol for campaign tickets: a session claims a ticket by assigning it to itself *before any work*; an open, unassigned ticket is unclaimed. Adopted from wayfinder (§6.3, `WAYFINDER-DESIGN.md`).
+
 **Cohort** — A domain-scoped group of experts managed by a Sub-Orchestrator. Examples: finance, legal, research.
+
+**Decision ticket** — A wayfinding-phase task whose resolution is a decision, not a deliverable. Types: grilling, prototype, research, task. Contrast *implementation ticket*, where decisions are reified in code (§05).
+
+**Destination** — The named end-state a campaign is finding its way to — the wayfinder reading of INTENT's `# Goal`. Fixes scope; named first (§6.2).
 
 **Cohort Sub-Orchestrator** — The manager LLM for a cohort. Receives tasks from the primary orchestrator; dispatches to experts / swarms; aggregates; emits packets.
 
@@ -44,6 +50,10 @@ Terms are listed alphabetically. Definitions are scoped to this PRD's usage.
 
 **F1–F8** — The eight named failure modes in §03 that the architecture is designed against: intent drift, context rot, compounding error, echo chamber, unverifiable stochastic claims, runaway cost, prompt injection, silent irreversible actions.
 
+**Fog** — In-scope campaign uncertainty that cannot yet be stated as a precise question. Held in the map's fog ledger; graduates into decision tickets as resolutions sharpen it. Test: *can the question be stated precisely?* — not *can it be answered?* (§05, §15.5).
+
+**Frontier** — The set of tickets a session may claim: open ∧ all blockers closed ∧ unclaimed. Always derived from ticket state, never stored (§6.3, §15.5).
+
 **Guardrail** — Policy/safety/quality/privacy check enforced at agent → orchestrator boundaries (§12).
 
 **Hub topology** — Default inter-agent communication pattern: all traffic routes through the Orchestrator System (§07). Redux/Zustand analogue.
@@ -53,6 +63,8 @@ Terms are listed alphabetically. Definitions are scoped to this PRD's usage.
 **L0 / L1 / L2 / L3** — Memory tiers: working (in-context) / hot (KV) / indexed (vector + SQL) / cold (archive) (§10).
 
 **LLM-as-Judge** — Using an LLM to score another LLM's output against a rubric. Calibrated against human labels *(Zheng et al., 2024)*.
+
+**Map** — The campaign's index of decisions: destination, decisions-so-far gists, fog ledger, out-of-scope ledger, tickets. An index, not a store — detail lives in ticket resolutions in the event log. Carried in Orchestrator State (§15.5).
 
 **Memory Index** — Structured metadata about a memory entry (sensitivity, freshness, confidence, source, supersedes). Schema 5 of 5. Queried by semantic + structured filters.
 
@@ -83,5 +95,7 @@ Terms are listed alphabetically. Definitions are scoped to this PRD's usage.
 **Swarm** — See Expert Swarm.
 
 **Verifier** — See Deterministic verifier.
+
+**Wayfinding phase / Execution phase** — The two campaign phases (§05). Wayfinding resolves decision tickets until no tickets and no fog remain; the human-ratified spec is the boundary artifact; execution reifies the decisions as implementation tickets. Loop mechanics adopted from mattpocock/skills' wayfinder (`WAYFINDER-DESIGN.md`).
 
 **Weight Tweaker** — Sub-responsibility of the Orchestrator System that updates per-agent and per-tool trust weights over time based on retrospective outcomes (§6.4.5).

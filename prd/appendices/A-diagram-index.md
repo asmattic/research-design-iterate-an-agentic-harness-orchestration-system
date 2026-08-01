@@ -1,6 +1,6 @@
 # Appendix A · Diagram Index
 
-Eleven Mermaid diagrams live at `/diagrams/`. Each answers one architectural question. Each is embedded in its corresponding chapter.
+Twelve Mermaid diagrams live at `/diagrams/`. Each answers one architectural question. Each is embedded in its corresponding chapter.
 
 | # | Diagram | Question answered | Chapter | File |
 |---|---|---|---|---|
@@ -15,6 +15,7 @@ Eleven Mermaid diagrams live at `/diagrams/`. Each answers one architectural que
 | **D09** | Guardrail stack | How do the four guardrail classes layer at boundaries? | §12 | `D09-guardrail-stack.mermaid` |
 | **D10** | Feedback loops (three cadences) | How do Reflexion / retrospective / eval-harness relate? | §13 | `D10-feedback-loops.mermaid` |
 | **D11** | Eval cadences | How do per-turn / per-task / per-campaign evals flow into config? | §14 | `D11-eval-cadences.mermaid` |
+| **D12** | Wayfinder loop | How does a campaign move from foggy intent to a ratified spec to execution? | §05 | `D12-wayfinder-loop.mermaid` |
 
 Rendering notes: Mermaid diagrams are rendered client-side in the Next.js docs site via the official `mermaid` package. Each `.mermaid` file is also embedded in the corresponding chapter markdown via an MDX `<Mermaid>` component.
 

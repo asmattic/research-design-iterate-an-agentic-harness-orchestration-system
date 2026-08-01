@@ -34,6 +34,8 @@ Nothing in this list blocks Round 2 kick-off. Items 1–2 can resolve async.
 
 Direct from PRD §23.1. Each line is a gate; Round 2 is not done until every line ships.
 
+> **Amendment (2026-07-31, `WAYFINDER-DESIGN.md`):** the orchestration loop is re-based on wayfinder. Scaffolding order is unchanged, but `orchestrator-state.schema.json` lands with the map fields now specified in §15.5 / Appendix D.4 (phase, destination, decisions, fog, out_of_scope, tickets), the event envelope carries the four ticket-lifecycle kinds, and the recorded-campaign integration test replays a small wayfinder map end-to-end.
+
 ### 3.1 · Protocol schemas at v0.2.0
 - `agent-contract.schema.json`, `event-envelope.schema.json`, `consensus-packet.schema.json`, `orchestrator-state.schema.json`, `memory-index.schema.json`.
 - Packaged as **Python** `harness-protocol` + **TypeScript** `@harness/protocol`.
