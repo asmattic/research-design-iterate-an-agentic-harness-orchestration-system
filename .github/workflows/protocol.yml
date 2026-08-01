@@ -37,3 +37,9 @@ jobs:
 
       - name: Run conformance CLI (the Phase 2A milestone gate)
         run: python -m harness_protocol.conform
+
+      - name: Install harness-reference (editable, with test extras)
+        run: python -m pip install -e "packages/harness-reference[test]"
+
+      - name: Run harness-reference suite (Phase 2A contract + strict-xfail Phase 2B behavior)
+        run: python -m pytest packages/harness-reference/tests -q -rX

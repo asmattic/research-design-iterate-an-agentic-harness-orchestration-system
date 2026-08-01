@@ -8,7 +8,7 @@ import pytest
 
 harness_protocol = pytest.importorskip("harness_protocol")
 
-from conftest import collect_examples, example_id
+from protocol_testlib import collect_examples, example_id
 
 VALID_EXAMPLES = collect_examples("valid")
 INVALID_EXAMPLES = collect_examples("invalid")

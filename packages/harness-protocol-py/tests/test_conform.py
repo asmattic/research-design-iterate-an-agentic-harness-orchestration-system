@@ -14,7 +14,7 @@ import pytest
 harness_protocol = pytest.importorskip("harness_protocol")
 conform = pytest.importorskip("harness_protocol.conform")
 
-from conftest import collect_examples
+from protocol_testlib import collect_examples
 
 # tests/ -> harness-protocol-py/ -> packages/ -> repo root
 REPO_ROOT = Path(__file__).resolve().parents[3]

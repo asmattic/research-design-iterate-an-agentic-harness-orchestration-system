@@ -7,7 +7,7 @@ import pytest
 harness_protocol = pytest.importorskip("harness_protocol")
 jsonschema = pytest.importorskip("jsonschema")
 
-from conftest import EXPECTED_SCHEMA_NAMES, EXPECTED_VERSION, SCHEMA_ID_TEMPLATE
+from protocol_testlib import EXPECTED_SCHEMA_NAMES, EXPECTED_VERSION, SCHEMA_ID_TEMPLATE
 
 TICKET_LIFECYCLE_KINDS = {
     "ticket_claimed",
