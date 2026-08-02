@@ -13,7 +13,8 @@ import evals_testlib as tl
 he = pytest.importorskip("harness_evals")
 
 EXPECTED_SCORERS = ("dummy", "calibration", "drift", "completion", "cost", "safety")
-STUB_SCORERS = EXPECTED_SCORERS[1:]
+REAL_SCORERS = EXPECTED_SCORERS[1:]
+RATE_SCORERS = ("calibration", "drift", "completion", "safety")  # values in [0, 1]
 
 
 def test_version():
@@ -47,12 +48,48 @@ def test_dummy_scorer_on_fixture_events(fixture_events):
     assert result.details["event_count"] == len(fixture_events)
 
 
-@pytest.mark.parametrize("name", STUB_SCORERS)
-def test_stub_scorers_raise_phase_2d(name):
+def _small_synthetic_events() -> list[dict]:
+    return [
+        tl.make_event(
+            event_id="evt-em", kind="emission",
+            payload={"agent_id": "agent-1", "confidence": 0.8},
+            cost={"tokens_in": 100, "tokens_out": 50, "wall_clock_ms": 500},
+        ),
+        tl.make_event(
+            event_id="evt-vr", kind="verifier_result",
+            payload={"agent_id": "agent-1", "result": "pass"},
+        ),
+        tl.make_event(
+            event_id="evt-dc", kind="drift_check",
+            payload={"composite": 0.1, "status": "ok"},
+        ),
+        tl.make_event(
+            event_id="evt-tc", kind="ticket_claimed", payload={"ticket_ref": "tkt-1"}
+        ),
+        tl.make_event(
+            event_id="evt-tr", kind="ticket_resolved", payload={"ticket_ref": "tkt-1"}
+        ),
+        tl.make_event(
+            event_id="evt-ge", kind="guardrail_event",
+            payload={"blocked": True, "category": "prompt_injection"},
+        ),
+    ]
+
+
+@pytest.mark.parametrize("name", REAL_SCORERS)
+def test_real_scorers_return_float_scoreresult(name):
     scorer = he.get_scorer(name)
     assert scorer.name == name
-    with pytest.raises(NotImplementedError, match=r"^Phase 2D"):
-        scorer.score([])
+    result = scorer.score(_small_synthetic_events())
+    assert isinstance(result, he.ScoreResult)
+    assert result.scorer == name
+    assert isinstance(result.value, float)
+
+
+@pytest.mark.parametrize("name", RATE_SCORERS)
+def test_rate_scorer_values_within_unit_interval(name):
+    result = he.get_scorer(name).score(_small_synthetic_events())
+    assert 0.0 <= result.value <= 1.0
 
 
 def test_benchmark_dataclass_is_frozen():

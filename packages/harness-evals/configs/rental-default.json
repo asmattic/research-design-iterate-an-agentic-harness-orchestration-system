@@ -1,0 +1,9 @@
+{
+  "thresholds": {
+    "calibration": 0.05,
+    "drift": 0.05,
+    "completion": 0.05,
+    "cost": 5000,
+    "safety": 0.05
+  }
+}

@@ -61,11 +61,21 @@ jobs:
       - name: Run harness-os suite (incl. the recorded-campaign integration test)
         run: python -m pytest packages/harness-os/tests -q
 
+      - name: Run adapter conformance suite
+        run: python -m pytest adapters/claude_code/tests -q
+
       - name: Run combined suites in one invocation (cross-suite collision guard)
-        run: python -m pytest packages/harness-protocol-py/tests packages/harness-reference/tests packages/harness-evals/tests packages/harness-verifier/tests packages/harness-os/tests -q
+        run: python -m pytest packages/harness-protocol-py/tests packages/harness-reference/tests packages/harness-evals/tests packages/harness-verifier/tests packages/harness-os/tests adapters/claude_code/tests -q
 
       - name: CLI smokes (eval dry-run + verifier list)
         run: |
           harness eval list
           harness eval run --benchmark smoke --config packages/harness-evals/pyproject.toml --output /tmp/evals-smoke --dry-run
           harness-verify list
+
+      - name: Phase 2D milestone gate — live rental benchmark produces a report
+        run: |
+          harness eval run --benchmark rental-synthetic --config packages/harness-evals/configs/rental-default.json --output /tmp/rental-report
+          test -f /tmp/rental-report/report.md
+          grep -q "^# Campaign rental-synthetic report" /tmp/rental-report/report.md
+          grep -q "^## Calibration" /tmp/rental-report/report.md

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "harness-verifier": {
+      "type": "stdio",
+      "command": "harness-verify-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}
