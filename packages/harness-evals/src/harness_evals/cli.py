@@ -1,7 +1,8 @@
 """The ``harness`` CLI: ``harness eval list`` and ``harness eval run``.
 
-Live benchmark execution is gated until Phase 2D (ROUND-2-PLAN §8 risk
-mitigation): without ``--dry-run`` the run command refuses cleanly.
+``run`` without ``--dry-run`` executes the benchmark live: it scores every
+scenario, writes the §14.8 ``report.md``, and (when the config carries a
+``baseline``) exits via the §14.6 regression gate.
 """
 
 from __future__ import annotations
@@ -11,7 +12,10 @@ import pathlib
 import sys
 
 from ._assets import assets_root
-from .benchmarks import get_benchmark, list_benchmarks
+from .benchmarks import Benchmark, get_benchmark, list_benchmarks
+from .regression import regression_gate
+from .report import write_report
+from .runner import current_scores, discover_scenarios, load_config, run_benchmark
 from .scorers import SCORER_NAMES
 
 
@@ -23,7 +27,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("list", help="list known benchmarks and scorers")
 
-    run = sub.add_parser("run", help="run one benchmark (dry-run only in Phase 2A)")
+    run = sub.add_parser("run", help="run one benchmark")
     run.add_argument("--benchmark", required=True, help="benchmark name")
     run.add_argument("--config", required=True, help="path to a run config file")
     run.add_argument("--output", required=True, help="output directory for results")
@@ -33,10 +37,6 @@ def _build_parser() -> argparse.ArgumentParser:
         help="print the execution plan without side effects",
     )
     return parser
-
-
-def _scorer_note(name: str) -> str:
-    return "real" if name == "dummy" else "stub — Phase 2D"
 
 
 def _cmd_list() -> int:
@@ -55,7 +55,46 @@ def _cmd_list() -> int:
             print(f"no benchmarks found at {root / 'benchmarks'}")
     print("scorers:")
     for name in SCORER_NAMES:
-        print(f"  {name}  ({_scorer_note(name)})")
+        print(f"  {name}")
+    return 0
+
+
+def _cmd_run_live(bench: Benchmark, config: pathlib.Path, output: str) -> int:
+    if bench.status != "available":
+        print(
+            f"error: benchmark {bench.name!r} is not runnable "
+            f"(status: {bench.status})",
+            file=sys.stderr,
+        )
+        return 1
+    try:
+        cfg = load_config(config)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    scenarios = discover_scenarios(bench.name)
+    if not scenarios:
+        print(
+            f"error: no scenarios found for benchmark {bench.name!r} "
+            "(no benchmarks/data/<name>/scenario-*.jsonl and no "
+            "fixtures/recorded-campaign.jsonl)",
+            file=sys.stderr,
+        )
+        return 1
+    try:
+        results = run_benchmark(bench, scenarios)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    report_path = write_report(bench.name, results, pathlib.Path(output))
+    print(f"report: {report_path}")
+    for result in results:
+        print(f"  {result.scorer}: {result.value}")
+    baseline = cfg.get("baseline")
+    if baseline:
+        return regression_gate(
+            current_scores(results), baseline, cfg.get("thresholds", {})
+        )
     return 0
 
 
@@ -71,14 +110,10 @@ def _cmd_run(args: argparse.Namespace) -> int:
         print(f"error: config file not found: {config}", file=sys.stderr)
         return 1
     if not args.dry_run:
-        print(
-            "live benchmark execution lands in Phase 2D; re-run with --dry-run",
-            file=sys.stderr,
-        )
-        return 1
+        return _cmd_run_live(bench, config, args.output)
     print(f"execution plan for benchmark {bench.name!r} [{bench.status}]:")
     for name in bench.scorer_names:
-        print(f"  scorer: {name}  ({_scorer_note(name)})")
+        print(f"  scorer: {name}")
     print(f"  config: {config}")
     print(f"  output dir: {args.output}")
     print("no side effects — dry run")

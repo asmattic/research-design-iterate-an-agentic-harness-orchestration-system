@@ -61,17 +61,100 @@ def test_missing_config_exits_one(stub_assets, tmp_path, capsys):
     assert code == 1
 
 
-def test_live_run_gated_to_phase_2d(stub_assets, config_file, tmp_path, capsys):
+def test_live_run_writes_section_14_8_report(stub_assets, config_file, tmp_path, capsys):
+    outdir = tmp_path / "results"
+    code, out = tl.run_cli(
+        ["eval", "run", "--benchmark", "smoke", "--config", str(config_file),
+         "--output", str(outdir)],
+        capsys,
+    )
+    assert code == 0
+    report = outdir / "report.md"
+    assert report.is_file(), "live run must write report.md in the output dir"
+    text = report.read_text(encoding="utf-8")
+    assert "# Campaign smoke report" in text
+    assert str(report) in out
+    for scorer_name in ("dummy", "completion", "cost"):
+        assert scorer_name in out  # one line per scorer
+
+
+def test_live_run_unavailable_benchmark_exits_one(stub_assets, config_file, tmp_path, capsys):
+    import json
+
+    planned = {
+        "name": "planned-bench",
+        "description": "not yet runnable",
+        "scorers": ["dummy"],
+        "status": "planned",
+    }
+    (stub_assets / "benchmarks" / "planned-bench.json").write_text(
+        json.dumps(planned), encoding="utf-8"
+    )
     from harness_evals import cli
 
     code = cli.main(
-        ["eval", "run", "--benchmark", "smoke", "--config", str(config_file),
-         "--output", str(tmp_path / "results")]
+        ["eval", "run", "--benchmark", "planned-bench", "--config",
+         str(config_file), "--output", str(tmp_path / "results")]
     )
     captured = capsys.readouterr()
     assert code == 1
-    lowered = (captured.out + captured.err).lower()  # hint may go to stderr
-    assert "phase 2d" in lowered or "dry-run" in lowered or "dry run" in lowered
+    assert "planned" in captured.err
+
+
+def test_live_run_malformed_config_exits_one(stub_assets, tmp_path, capsys):
+    bad_cfg = tmp_path / "bad.json"
+    bad_cfg.write_text("{not json", encoding="utf-8")
+    from harness_evals import cli
+
+    code = cli.main(
+        ["eval", "run", "--benchmark", "smoke", "--config", str(bad_cfg),
+         "--output", str(tmp_path / "results")]
+    )
+    capsys.readouterr()
+    assert code == 1
+
+
+def test_live_run_baseline_regression_exits_one(stub_assets, tmp_path, capsys):
+    import json
+
+    # Stub events resolve every claimed ticket, so completion scores 1.0;
+    # demand an impossible completion baseline of 2.0 to trip the gate.
+    cfg = tmp_path / "baseline-config.json"
+    cfg.write_text(
+        json.dumps(
+            {"baseline": {"completion": 2.0}, "thresholds": {"completion": 0.05}}
+        ),
+        encoding="utf-8",
+    )
+    outdir = tmp_path / "results"
+    code, _ = tl.run_cli(
+        ["eval", "run", "--benchmark", "smoke", "--config", str(cfg),
+         "--output", str(outdir)],
+        capsys,
+    )
+    assert code == 1
+    assert (outdir / "report.md").is_file(), "report is written even when gated"
+
+
+def test_live_run_baseline_pass_exits_zero(stub_assets, tmp_path, capsys):
+    import json
+
+    cfg = tmp_path / "baseline-config.json"
+    cfg.write_text(
+        json.dumps(
+            {
+                "baseline": {"completion": 1.0, "cost": 10},
+                "thresholds": {"completion": 0.05, "cost": 5000},
+            }
+        ),
+        encoding="utf-8",
+    )
+    code, _ = tl.run_cli(
+        ["eval", "run", "--benchmark", "smoke", "--config", str(cfg),
+         "--output", str(tmp_path / "results")],
+        capsys,
+    )
+    assert code == 0
 
 
 def test_python_dash_m_entrypoint():

@@ -1,8 +1,7 @@
-"""Strict-xfail specs for Phase 2D behavior.
+"""Behavior specs for Phase 2D (formerly strict-xfail).
 
-Each test calls the stubbed API FIRST so NotImplementedError escapes today
-(xfail). Once Phase 2D lands, strict=True turns these into hard XPASS
-failures, forcing the markers off and the real assertions on.
+Phase 2D has landed: the xfail markers are gone and the assertions are live.
+Test bodies are byte-identical to the Phase 2A contract.
 """
 
 from __future__ import annotations
@@ -13,17 +12,12 @@ import evals_testlib as tl
 
 he = pytest.importorskip("harness_evals")
 
-phase2d = pytest.mark.xfail(
-    strict=True, raises=NotImplementedError, reason="Phase 2D: not yet implemented"
-)
-
 SECTION_HEADINGS = (
     "Completion", "Intent-alignment", "Drift", "Calibration",
     "Cost", "Safety", "Human gates", "Retrospective notes",
 )
 
 
-@phase2d
 def test_write_report_produces_section_14_8_report(tmp_out):
     from harness_evals import report
 
@@ -36,7 +30,6 @@ def test_write_report_produces_section_14_8_report(tmp_out):
         assert heading in text, f"missing section heading: {heading}"
 
 
-@phase2d
 def test_regression_gate_zero_on_equal_scores():
     from harness_evals import regression
 
@@ -44,7 +37,6 @@ def test_regression_gate_zero_on_equal_scores():
     assert regression.regression_gate(scores, dict(scores), {"dummy": 0.05}) == 0
 
 
-@phase2d
 def test_regression_gate_nonzero_on_regression():
     from harness_evals import regression
 
@@ -53,7 +45,6 @@ def test_regression_gate_nonzero_on_regression():
     assert regression.regression_gate(current, baseline, {"completion": 0.1}) != 0
 
 
-@phase2d
 def test_calibration_scorer_brier_and_ece():
     events = [
         tl.make_event(
@@ -70,7 +61,6 @@ def test_calibration_scorer_brier_and_ece():
     assert "ece" in result.details
 
 
-@phase2d
 def test_cost_scorer_sums_tokens_across_fixture(fixture_events):
     if not fixture_events:
         pytest.skip("canonical recorded-campaign.jsonl not yet present")

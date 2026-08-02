@@ -31,16 +31,30 @@ def stub_assets(tmp_path, monkeypatch):
     manifest = {
         "name": "smoke",
         "description": "Stub smoke benchmark for hermetic CLI tests",
-        "scorers": ["dummy"],
+        "scorers": ["dummy", "calibration", "drift", "completion", "cost", "safety"],
         "status": "available",
     }
     (root / "benchmarks" / "smoke.json").write_text(
         json.dumps(manifest), encoding="utf-8"
     )
+    # No benchmarks/data/smoke/ dir on purpose: the live runner must fall back
+    # to this single fixture as the one scenario.
     events = [
         tl.make_event(event_id=f"evt-{i}", cost={"tokens_in": 10, "tokens_out": 5})
         for i in range(2)
     ]
+    events.append(
+        tl.make_event(
+            event_id="evt-claim", kind="ticket_claimed",
+            payload={"ticket_ref": "tkt-1"},
+        )
+    )
+    events.append(
+        tl.make_event(
+            event_id="evt-resolve", kind="ticket_resolved",
+            payload={"ticket_ref": "tkt-1"},
+        )
+    )
     (root / "fixtures" / "recorded-campaign.jsonl").write_text(
         "\n".join(json.dumps(e) for e in events) + "\n", encoding="utf-8"
     )
