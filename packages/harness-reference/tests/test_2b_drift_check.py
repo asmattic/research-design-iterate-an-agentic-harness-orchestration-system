@@ -31,6 +31,13 @@ def test_drift_disjoint_pauses():
     assert result.status in ("pause", "halt")
 
 
+def test_drift_thresholds_must_be_in_unit_interval():
+    with pytest.raises(ValueError):
+        drift_mod.drift_check("a", "b", warn_threshold=-0.1, pause_threshold=0.5)
+    with pytest.raises(ValueError):
+        drift_mod.drift_check("a", "b", warn_threshold=0.2, pause_threshold=1.5)
+
+
 def test_drift_threshold_monotonic():
     intent = "Plan the campaign roadmap."
     state = "Plan the campaign roadmap and also restructure the billing stack."

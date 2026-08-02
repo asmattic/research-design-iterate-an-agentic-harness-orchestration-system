@@ -307,7 +307,7 @@ All schemas use JSON-Schema Draft 2020-12. Referenced as `$ref: "https://harness
   "type": "object",
   "required": ["memory_id", "tier", "scope", "sensitivity", "freshness"],
   "properties": {
-    "memory_id": { "type": "string" },
+    "memory_id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
     "tier": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
     "scope": { "type": "string", "enum": ["campaign", "cross_campaign", "organization"] },
     "domain": { "type": "string" },
@@ -318,7 +318,7 @@ All schemas use JSON-Schema Draft 2020-12. Referenced as `$ref: "https://harness
     "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
     "source": { "type": "string" },
     "contributing_agents": { "type": "array", "items": { "type": "string" } },
-    "supersedes": { "type": ["string", "null"] },
+    "supersedes": { "type": ["string", "null"], "pattern": "^[a-z0-9_]+$" },
     "tags": { "type": "array", "items": { "type": "string" } },
     "body_ref": { "type": "string" }
   }

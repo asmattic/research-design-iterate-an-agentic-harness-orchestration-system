@@ -34,6 +34,14 @@ def test_consensus_preserves_dissent(valid_event):
     assert block["interval"]["low"] <= block["value"] <= block["interval"]["high"]
 
 
+def test_consensus_rejects_malformed_emission_up_front():
+    incomplete = {"agent_id": "a1", "value": 100.0, "weight": 1.0}  # no reasoning
+    with pytest.raises(ValueError, match="reasoning"):
+        consensus.aggregate(
+            [incomplete, _emission("dissenter", 250.0, 0.6)],
+            campaign_id="c", cohort="finance", task_id="t")
+
+
 def test_consensus_floor_drops_small_dissent():
     emissions = [_emission("a1", 100.0, 1.0), _emission("a2", 102.0, 1.0),
                  _emission("a3", 99.0, 1.0), _emission("dissenter", 250.0, 0.3)]
