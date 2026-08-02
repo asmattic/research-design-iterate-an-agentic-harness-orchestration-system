@@ -1,0 +1,9 @@
+{
+  "name": "harness-orchestrator",
+  "version": "0.2.0",
+  "description": "Claude Code adapter for the agentic harness orchestration system: six harness-* skills, four subagents, PreToolUse irreversible-action gate, PostToolUse L3 event-log bridge, and the harness-verifier MCP server.",
+  "author": {
+    "name": "Asmattic",
+    "email": "mattoldfieldweb@gmail.com"
+  }
+}
