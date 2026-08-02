@@ -12,9 +12,15 @@ from __future__ import annotations
 import json
 import os
 import pathlib
+import re
 from typing import Any, Mapping, Sequence
 
 from harness_protocol import iter_errors
+
+#: Filename-safe memory ids, mirroring the memory-index schema's pattern.
+#: Enforced in code as defense in depth: memory ids can originate from agent
+#: output, and an unsafe id must never become a path outside the store root.
+_SAFE_MEMORY_ID_RE = re.compile(r"^[a-z0-9_]+$")
 
 
 class MemoryIndex:
@@ -25,6 +31,11 @@ class MemoryIndex:
         self._root = pathlib.Path(root)
 
     def _entry_path(self, memory_id: str) -> pathlib.Path:
+        if not _SAFE_MEMORY_ID_RE.fullmatch(memory_id):
+            raise ValueError(
+                f"memory_id {memory_id!r} is not filename-safe "
+                "(must match ^[a-z0-9_]+$); refusing to touch a path from it"
+            )
         return self._root / f"{memory_id}.json"
 
     def _all_entries(self) -> dict[str, dict[str, Any]]:
@@ -41,14 +52,19 @@ class MemoryIndex:
         """Validate and store *entry* as ``<root>/<memory_id>.json``.
 
         Raises ValueError (message lists every schema error) on an invalid
-        entry. A ``supersedes`` reference to an id that is not (yet) stored
-        is allowed. Returns the entry's memory_id.
+        entry, on a memory_id that is not filename-safe, or on an entry that
+        claims to supersede itself. A ``supersedes`` reference to an id that
+        is not (yet) stored is allowed. Returns the entry's memory_id.
         """
         errors = iter_errors("memory-index", entry)
         if errors:
             raise ValueError("invalid memory entry: " + "; ".join(errors))
-        self._root.mkdir(parents=True, exist_ok=True)
         memory_id = str(entry["memory_id"])
+        if entry.get("supersedes") == memory_id:
+            raise ValueError(
+                f"entry {memory_id!r} cannot supersede itself"
+            )
+        self._root.mkdir(parents=True, exist_ok=True)
         self._entry_path(memory_id).write_text(
             json.dumps(dict(entry), ensure_ascii=False), encoding="utf-8"
         )
@@ -104,7 +120,9 @@ class MemoryIndex:
         Starting from any id in the chain, repeatedly steps to the stored
         entry that supersedes the current one until reaching the entry that
         nobody supersedes. Raises KeyError for an unknown id and ValueError
-        if the chain contains a cycle.
+        if the chain contains a cycle or a fork (two stored entries claiming
+        to supersede the same prior — a data-integrity conflict the caller
+        must hear about rather than have silently resolved).
         """
         entries = self._all_entries()
         if memory_id not in entries:
@@ -112,8 +130,14 @@ class MemoryIndex:
         superseder_of: dict[str, str] = {}
         for mid, entry in sorted(entries.items()):
             prior = entry.get("supersedes")
-            if prior and prior not in superseder_of:
-                superseder_of[prior] = mid
+            if not prior:
+                continue
+            if prior in superseder_of:
+                raise ValueError(
+                    f"conflicting supersedes: both {superseder_of[prior]!r} "
+                    f"and {mid!r} supersede {prior!r}"
+                )
+            superseder_of[prior] = mid
         current = memory_id
         seen = {current}
         while current in superseder_of:

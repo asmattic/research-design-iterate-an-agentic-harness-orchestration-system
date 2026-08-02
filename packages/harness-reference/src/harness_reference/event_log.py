@@ -5,6 +5,13 @@ Every envelope appended to the log must validate against the protocol's
 ``harness_protocol.iter_errors("event-envelope", ...)``. The JSONL file on
 disk is the single source of truth — reads stream from disk on every call, so
 there is no in-memory cache that can drift from the file.
+
+Concurrency: Round 2 assumes a **single writer** per log file (one
+orchestrator process owns each campaign's L3 log). Appends are single
+``write()`` calls on an append-mode handle, which is line-atomic on local
+POSIX filesystems for typical envelope sizes, but nothing here locks the
+file — multi-emitter convergence on one log gets explicit locking in Phase
+2C when harness-os introduces concurrent emitters.
 """
 
 from __future__ import annotations

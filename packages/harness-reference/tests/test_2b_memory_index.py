@@ -26,6 +26,37 @@ def test_memory_index_roundtrip_and_query(tmp_path, valid_memory_entry):
     assert idx.query(tags=["no-such-tag"]) == []
 
 
+def test_memory_index_rejects_path_unsafe_memory_id(tmp_path, valid_memory_entry):
+    idx = memory_index.MemoryIndex(tmp_path / "store")
+    hostile = dict(valid_memory_entry, memory_id="../escape", supersedes=None)
+    with pytest.raises(ValueError):
+        idx.add(hostile)
+    assert not (tmp_path / "escape.json").exists()
+    with pytest.raises(ValueError):
+        idx.get("../escape")
+
+
+def test_memory_index_rejects_self_supersede(tmp_path, valid_memory_entry):
+    idx = memory_index.MemoryIndex(tmp_path)
+    selfie = dict(valid_memory_entry, supersedes=valid_memory_entry["memory_id"])
+    with pytest.raises(ValueError):
+        idx.add(selfie)
+
+
+def test_memory_index_forked_supersedes_chain_raises(tmp_path, valid_memory_entry):
+    idx = memory_index.MemoryIndex(tmp_path)
+    base = dict(valid_memory_entry, supersedes=None)
+    fork_a = dict(valid_memory_entry, memory_id="mem_20260601_fork_a",
+                  supersedes=base["memory_id"])
+    fork_b = dict(valid_memory_entry, memory_id="mem_20260601_fork_b",
+                  supersedes=base["memory_id"])
+    idx.add(base)
+    idx.add(fork_a)
+    idx.add(fork_b)
+    with pytest.raises(ValueError, match="conflicting supersedes"):
+        idx.resolve(base["memory_id"])
+
+
 def test_memory_index_supersedes_chain(tmp_path, valid_memory_entry):
     idx = memory_index.MemoryIndex(tmp_path)
     first = dict(valid_memory_entry, supersedes=None)

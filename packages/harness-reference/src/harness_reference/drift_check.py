@@ -79,11 +79,13 @@ def drift_check(
     """Compare *state_summary* against *intent_text* and return a DriftResult.
 
     Thresholds only affect the status ladder, never the composite.
-    Raises ValueError unless ``warn_threshold <= pause_threshold``.
+    Raises ValueError unless ``0 <= warn_threshold <= pause_threshold <= 1``
+    (the composite lives in [0, 1], so thresholds outside it would silently
+    make parts of the status ladder unreachable).
     """
-    if warn_threshold > pause_threshold:
+    if not (0.0 <= warn_threshold <= pause_threshold <= 1.0):
         raise ValueError(
-            "warn_threshold must be <= pause_threshold "
+            "thresholds must satisfy 0 <= warn_threshold <= pause_threshold <= 1 "
             f"(got warn={warn_threshold!r}, pause={pause_threshold!r})"
         )
 

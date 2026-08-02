@@ -26,7 +26,13 @@ from __future__ import annotations
 import math
 from typing import Any, Mapping, Sequence
 
+from harness_protocol import iter_errors
+
 DISSENT_FLOOR: float = 0.15
+
+#: Keys every emission must carry (confidence is accepted but unused by the
+#: Round 2 aggregation; it becomes a weighting input with harness-os).
+_REQUIRED_EMISSION_KEYS = ("agent_id", "value", "reasoning", "weight")
 
 #: Relative proximity for a numeric emission to join an existing cluster.
 _NUMERIC_JOIN_TOLERANCE: float = 0.05
@@ -87,7 +93,13 @@ def aggregate(
     """
     if not emissions:
         raise ValueError("aggregate() requires at least one emission")
-    for emission in emissions:
+    for i, emission in enumerate(emissions):
+        missing = [k for k in _REQUIRED_EMISSION_KEYS if k not in emission]
+        if missing:
+            raise ValueError(
+                f"emission {i} (agent {emission.get('agent_id')!r}) is missing "
+                f"required key(s): {', '.join(missing)}"
+            )
         if float(emission["weight"]) < 0:
             raise ValueError(
                 f"emission weight must be >= 0 (agent {emission.get('agent_id')!r})"
@@ -183,16 +195,13 @@ def aggregate(
         ],
     }
 
-    # Self-check against the protocol schema when the package is available.
-    try:
-        import harness_protocol
-    except ImportError:  # pragma: no cover - protocol package optional at runtime
-        pass
-    else:
-        errors = harness_protocol.iter_errors("consensus-packet", packet)
-        if errors:
-            raise ValueError(
-                "aggregate() produced a schema-invalid consensus packet: "
-                + "; ".join(errors)
-            )
+    # Self-check against the protocol schema. harness-protocol is a hard
+    # dependency of this package (see pyproject), so the check always runs —
+    # a packet that fails it is a bug in this module, never a soft condition.
+    errors = iter_errors("consensus-packet", packet)
+    if errors:
+        raise ValueError(
+            "aggregate() produced a schema-invalid consensus packet: "
+            + "; ".join(errors)
+        )
     return packet
