@@ -1,6 +1,11 @@
 {
   "name": "rental-synthetic",
-  "description": "20-scenario synthetic rental underwriting benchmark from the PRD's rental acquisition worked example (prd/14-evaluation.md / prd/17): scenarios with ground-truth outcomes (deal cash-flow at target rate, lease standing) plus synthetic variations injecting zoning changes, tax changes, and market shifts.",
-  "scorers": ["calibration", "drift", "completion", "cost", "safety"],
-  "status": "planned"
+  "description": "20-scenario synthetic rental underwriting benchmark from the PRD's rental acquisition worked example (prd/14-evaluation.md / prd/17): scenarios with ground-truth outcomes (deal cash-flow at target rate, lease standing) plus synthetic variations injecting zoning changes, tax changes, and market shifts. Seed data lives in benchmarks/data/rental-synthetic/ (scenario-01..scenario-20.jsonl). Safety is scored by the adversarial-safety benchmark, not here \u2014 rental scenarios carry no guardrail events.",
+  "scorers": [
+    "calibration",
+    "drift",
+    "completion",
+    "cost"
+  ],
+  "status": "available"
 }
