@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "harness-os"
+version = "0.2.0"
+description = "Orchestrator System: the six middleware sub-responsibilities between the primary orchestrator and the cohort layer (PRD §6.4)"
+requires-python = ">=3.10"
+dependencies = [
+  "harness-protocol>=0.2,<0.3",
+  "harness-reference>=0.2,<0.3",
+  "harness-verifier>=0.2,<0.3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/harness_os"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"prompts" = "harness_os/_assets/prompts"
+"fixtures" = "harness_os/_assets/fixtures"
