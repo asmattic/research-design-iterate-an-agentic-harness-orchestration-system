@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "harness-verifier"
+version = "0.2.0"
+description = "Deterministic verifier layer: runner, five built-in verifiers, CLI, MCP wrapper"
+requires-python = ">=3.10"
+dependencies = ["harness-protocol>=0.2,<0.3"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+mcp = ["mcp>=1.0"]
+
+[project.scripts]
+harness-verify = "harness_verifier.cli:main"
+harness-verify-mcp = "harness_verifier.mcp_server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/harness_verifier"]

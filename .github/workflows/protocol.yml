@@ -50,10 +50,22 @@ jobs:
       - name: Run harness-evals suite (Phase 2A contract + strict-xfail Phase 2D behavior)
         run: python -m pytest packages/harness-evals/tests -q -rX
 
-      - name: Run combined suites in one invocation (cross-suite collision guard)
-        run: python -m pytest packages/harness-protocol-py/tests packages/harness-reference/tests packages/harness-evals/tests -q
+      - name: Install harness-verifier and harness-os (editable, with test + mcp extras)
+        run: |
+          python -m pip install -e "packages/harness-verifier[test,mcp]"
+          python -m pip install -e "packages/harness-os[test]"
 
-      - name: Eval CLI dry-run smoke
+      - name: Run harness-verifier suite
+        run: python -m pytest packages/harness-verifier/tests -q
+
+      - name: Run harness-os suite (incl. the recorded-campaign integration test)
+        run: python -m pytest packages/harness-os/tests -q
+
+      - name: Run combined suites in one invocation (cross-suite collision guard)
+        run: python -m pytest packages/harness-protocol-py/tests packages/harness-reference/tests packages/harness-evals/tests packages/harness-verifier/tests packages/harness-os/tests -q
+
+      - name: CLI smokes (eval dry-run + verifier list)
         run: |
           harness eval list
           harness eval run --benchmark smoke --config packages/harness-evals/pyproject.toml --output /tmp/evals-smoke --dry-run
+          harness-verify list
