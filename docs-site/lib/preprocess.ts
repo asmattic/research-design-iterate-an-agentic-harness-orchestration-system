@@ -82,7 +82,7 @@ export function preprocessMarkdown(md: string): string {
   out = out
     .split('\n')
     .map((line) => {
-      // MUTATION (temporary, reverted in the next commit): table-row skip removed
+      if (/^\s*\|/.test(line)) return line;
       return line.replace(
         /`?(D\d{2}-[a-z0-9-]+)\.mermaid`?/g,
         (match, id: string) => {
