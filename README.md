@@ -72,13 +72,13 @@ This project follows a feature-branch workflow:
 
 ### Local verification
 
-- Full local gate: `pnpm --dir docs-site run test:js` (typecheck → unit tests → build → smoke test). The unit suite (`docs-site/scripts/preprocess.test.mjs`) guards the markdown preprocessor; CI does not run it yet ([ASM-572](https://linear.app/asmattic/issue/ASM-572)).
-- **Known issue:** `pnpm dev` (Turbopack) currently reports Ready but never serves requests ([ASM-571](https://linear.app/asmattic/issue/ASM-571)). Verify pages against the production server instead: `pnpm --dir docs-site build && pnpm --dir docs-site start` (port 4567).
+- Full local gate: `pnpm --dir docs-site run test:js` (typecheck → unit tests → build → smoke test). The unit suite (`docs-site/scripts/preprocess.test.mjs`) guards the markdown preprocessor and also runs in CI.
+- **Known issue:** `pnpm dev` (Turbopack) currently reports Ready but never serves requests (#27). Verify pages against the production server instead: `pnpm --dir docs-site build && pnpm --dir docs-site start` (port 4567).
 
 ### Deployment
 
 - The site deploys to the Vercel project **harness-prd-docs** (production stays behind Vercel SSO by design — log in to view).
-- Pushes to `main` do **not** auto-deploy yet — the Git integration is not connected ([ASM-570](https://linear.app/asmattic/issue/ASM-570)). Until then, deploy manually from the repo root: `npx vercel deploy --prod` (the root `vercel.json` carries the build config).
+- Pushes to `main` do **not** auto-deploy yet — the Git integration is not connected (#26). Until then, deploy manually from the repo root: `npx vercel deploy --prod` (the root `vercel.json` carries the build config).
 
 ## Contributing
 
